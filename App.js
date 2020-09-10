@@ -16,6 +16,7 @@ import HomeScreen from './app/components/HomeScreen';
 import TitlesScreen from './app/components/TitlesScreen';
 import LibraryScreen from './app/components/LibraryScreen';
 import ReaderScreen from './app/components/ReaderScreen';
+import ExperimentScreen from './app/components/ExperimentScreen';
 
 const Stack = createStackNavigator();
 
@@ -31,6 +32,7 @@ const App = () => {
                     <Stack.Screen name="Titles" component= {TitlesScreen} />
                     <Stack.Screen name="Library" component= {LibraryScreen} />
                     <Stack.Screen name="Reader" component= {ReaderScreen} />
+                    <Stack.Screen name="Experiment" component= {ExperimentScreen} />
                     
 
                     

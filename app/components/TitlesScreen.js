@@ -1,78 +1,93 @@
-import React from 'react';
-import { StyleSheet, View, Text, Button } from 'react-native';
-import { TouchableWithoutFeedback, FlatList, ScrollView } from 'react-native-gesture-handler';
+import React, { useEffect, useState } from 'react';
+import { StyleSheet, View, Text, Button, ActivityIndicator, FlatList } from 'react-native';
+import { TouchableWithoutFeedback, ScrollView } from 'react-native-gesture-handler';
 
+let checker = 0; // to prevent fetchPostData from completing some functions more than once
 
-const ListTitles = (navigation) => {
-
+const fetchPostData = (navigation) => {
     
-    let bookArr = [];
+    const [isLoading, setLoading] = useState(true);
+    const [data, setData] = useState([]);
 
-    for(let i = 0; i < 100; i++) {
+    useEffect(() => {
+        fetch('https://jsonplaceholder.typicode.com/posts')
+        .then((response) => response.json())
+        .then((json) => setData(json))
+        .catch((error) => console.error(error))
+        .finally(() => setLoading(false));
+    }, []);
+    
+    if(!isLoading && checker == 0) {
+        assignData(data);
+        checker = 1;
         
         
-        bookArr.push (
-            {
-                "id": i,
-                "title": "Book " + i,
-                "category": "African",
-                "content": "Sometextcontenxthere"
-            }
-        );
-
-        // let bookArr = [
-        //     {
-        //         "id": i,
-        //         "title": "Book " + i,
-        //         "category": "African",
-        //         "content": "Sometextcontenxthere"
-        //     }
-        // ];
-
-        
-
-        
-        
-        
-  
     }
+    return (
+        <View>
+        {isLoading ? <ActivityIndicator/> : (
+            <FlatList
+            data={data}
+            keyExtractor={({ id }, index) => id}
+            renderItem={({ item }) => (
+                
+                <TouchableWithoutFeedback onPress={() => navigation.navigate('Reader',
+                {
+                    id: item["id"],
+                    title: item["title"],
+                    body: item["body"]
+                } 
+                )}>
 
-    let bookArrMap = bookArr.map((item) => 
-        <TouchableWithoutFeedback onPress={() => navigation.navigate('Reader',
-           {
-            id: item["id"],
-            content: item["content"]
-           } 
-           )}>
-
-            <Text key={ item["id"] } style={ styles.text }>{ item["title"] }</Text>
-        </TouchableWithoutFeedback>
+                    <Text style={styles.text}>{item.title}</Text>
+                </TouchableWithoutFeedback>
+            )}
+            />
+        )}
+        </View>
     );
-    
-    let returnValue = bookArrMap
+}
 
+let fetchedData = []; //to be saved in async if button to download clicked
+function assignData(data) {
     
-    return returnValue;
-    
+    for(let i=0;i<data.length;i++){
+
+        fetchedData.push (
+            {
+                id: data[i]["id"],
+                title: data[i]["title"],
+                body: data[i]["body"] 
+            }
+        )
+    }
+    console.log(fetchedData.length);
+    console.log(fetchedData);
     
 }
 
+
+
+
+
 const TitlesScreen = ({ navigation }) => {
-    let bookTitle = "something";
-    let bookArr = ListTitles();
-    console.log("hello");
     
-    //console.log(bookArr[1]["title"]);
+    
+    
+    
     return (
         <View style={styles.container}>
 
-            <Text style={styles.text}>Book titles here</Text>
-            
-            <ScrollView>
-                {ListTitles(navigation)}
-            </ScrollView>
-            
+            <View style={styles.content}>
+                
+                {fetchPostData(navigation)}
+                
+            </View>
+            <View style={styles.buttonLayer}>
+                <Button style={styles.button} title="Download all"></Button>
+            </View>
         </View>
+
     );
 }
 
@@ -88,7 +103,19 @@ const styles = StyleSheet.create({
         fontSize: 20,
         padding: "2%"
 
+    },
+
+    button: {
+        flex: 1,
+        justifyContent: "center",
+        alignContent: "center"
+        
+    },
+    content: {
+        flex: -1
     }
+    
+    
 })
 
 export default TitlesScreen;
