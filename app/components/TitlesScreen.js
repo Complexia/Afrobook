@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { StyleSheet, View, Text, Button, ActivityIndicator, FlatList } from 'react-native';
+import { StyleSheet, View, Text, Button, ActivityIndicator, FlatList, AsyncStorage } from 'react-native';
 import { TouchableWithoutFeedback, ScrollView } from 'react-native-gesture-handler';
 
 let checker = 0; // to prevent fetchPostData from completing some functions more than once
@@ -28,12 +28,12 @@ const fetchPostData = (navigation) => {
         {isLoading ? <ActivityIndicator/> : (
             <FlatList
             data={data}
-            keyExtractor={({ id }, index) => id}
+            keyExtractor={({ id }) => id}
             renderItem={({ item }) => (
                 
-                <TouchableWithoutFeedback onPress={() => navigation.navigate('Reader',
+                <TouchableWithoutFeedback onPress={() => navigation.navigate('Description',
                 {
-                    id: item["id"],
+                    
                     title: item["title"],
                     body: item["body"]
                 } 
@@ -49,7 +49,7 @@ const fetchPostData = (navigation) => {
 }
 
 let fetchedData = []; //to be saved in async if button to download clicked
-function assignData(data) {
+function assignData(data) { //called when promise is fulfilled
     
     for(let i=0;i<data.length;i++){
 
@@ -61,11 +61,32 @@ function assignData(data) {
             }
         )
     }
-    console.log(fetchedData.length);
-    console.log(fetchedData);
+    // console.log(fetchedData.length);
+    // console.log(fetchedData);
     
 }
 
+function downloadAll() {
+    while(fetchedData.length == 0){
+        console.log("waiting for fetched data");
+    }
+    console.log("we are here");
+    for(let i=0;i<fetchedData.length;i++){
+        AsyncStorage.setItem(fetchedData[i]["title"], JSON.stringify(fetchedData[i]));
+    }
+    console.log("we are done");
+}
+
+const displayData = async() => {
+    try{
+        let someBook = await AsyncStorage.getItem(fetchedData[5].title);
+        let parsed = JSON.parse(someBook);
+        alert(parsed.title);
+    }
+    catch(error){
+        alert(error);
+    }
+}
 
 
 
@@ -84,7 +105,22 @@ const TitlesScreen = ({ navigation }) => {
                 
             </View>
             <View style={styles.buttonLayer}>
-                <Button style={styles.button} title="Download all"></Button>
+                <Button 
+                    style={styles.button} 
+                    title="Download all"
+                    onPress={() => downloadAll()}
+                >
+                    
+                </Button>
+                
+            </View>
+            <View style={styles.buttonLayer}>
+                
+                <Button 
+                    style={styles.button} 
+                    title="Display Data"
+                    onPress={() => displayData()}
+                    ></Button>
             </View>
         </View>
 
@@ -93,6 +129,7 @@ const TitlesScreen = ({ navigation }) => {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
         padding: "5%",
         bottom: 25
         
@@ -106,14 +143,19 @@ const styles = StyleSheet.create({
     },
 
     button: {
-        flex: 1,
-        justifyContent: "center",
-        alignContent: "center"
+        
         
     },
     content: {
-        flex: -1
+        flex: 1
+    },
+    buttonLayer: {
+        flexDirection: "column",
+        flex: -1,
+        padding: "1%"
+        
     }
+
     
     
 })

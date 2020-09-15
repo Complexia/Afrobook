@@ -22,7 +22,7 @@ const HomeScreen = ({ navigation }) => {
 
                     <Button 
                         title="View library" 
-                        onPress={() => navigation.navigate("Experiment")} />
+                        onPress={() => navigation.navigate("Library")} />
                 </View>
             </View>
 

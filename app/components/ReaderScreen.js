@@ -35,6 +35,8 @@ const ReaderScreen = ({ route, navigation }) => {
             <Text>The book text here</Text>
             <Text>{ id }</Text>
             <Text>{ title }</Text>
+
+            
             
 
             <FlatList
