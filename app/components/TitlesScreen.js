@@ -3,14 +3,14 @@ import { StyleSheet, View, Text, Button, ActivityIndicator, FlatList, AsyncStora
 import { TouchableWithoutFeedback, ScrollView } from 'react-native-gesture-handler';
 
 let checker = 0; // to prevent fetchPostData from completing some functions more than once
-
+let fetchedData = []; //to be saved in async if button to download clicked
 const fetchPostData = (navigation) => {
     
     const [isLoading, setLoading] = useState(true);
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch('https://jsonplaceholder.typicode.com/posts')
+        fetch('http://192.168.1.103:3000/book')
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => console.error(error))
@@ -27,15 +27,15 @@ const fetchPostData = (navigation) => {
         <View>
         {isLoading ? <ActivityIndicator/> : (
             <FlatList
-            data={data}
+            data={fetchedData}
             keyExtractor={({ id }) => id}
             renderItem={({ item }) => (
                 
                 <TouchableWithoutFeedback onPress={() => navigation.navigate('Description',
                 {
-                    
-                    title: item["title"],
-                    body: item["body"]
+                    id: item.id,
+                    title: item.title,
+                    content: item.content
                 } 
                 )}>
 
@@ -48,21 +48,22 @@ const fetchPostData = (navigation) => {
     );
 }
 
-let fetchedData = []; //to be saved in async if button to download clicked
+
 function assignData(data) { //called when promise is fulfilled
-    
+    console.log(data.length);
     for(let i=0;i<data.length;i++){
 
         fetchedData.push (
             {
-                id: data[i]["id"],
-                title: data[i]["title"],
-                body: data[i]["body"] 
+                id: data[i]["_id"],
+                title: data[i]["Title"],
+                content: data[i]["Text"] 
             }
         )
     }
-    // console.log(fetchedData.length);
-    // console.log(fetchedData);
+
+     console.log(fetchedData[0].content);
+       
     
 }
 

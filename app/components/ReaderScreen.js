@@ -14,27 +14,25 @@ const Item = ({ body }) => (
 
 const ReaderScreen = ({ route, navigation }) => {
 
-    const { id } = route.params;
-    const { title } = route.params;
-    const { body } = route.params;
+    
+    const { content } = route.params;
 
     const data = [
-        {
+        {   
             id: id,
-            title: title,
-            body: body
+            content: content
         }
     ]
 
     const renderItem = ({ item }) => (
-        <Item body={body} />
+        <Item content={content} />
       );
 
     return (
         <View style={styles.container}>
             <Text>The book text here</Text>
             <Text>{ id }</Text>
-            <Text>{ title }</Text>
+            <Text>{ content }</Text>
 
             
             

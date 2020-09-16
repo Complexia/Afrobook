@@ -22,7 +22,7 @@ const HomeScreen = ({ navigation }) => {
 
                     <Button 
                         title="View library" 
-                        onPress={() => navigation.navigate("Library")} />
+                        onPress={() => navigation.navigate("FlatListScreen")} />
                 </View>
             </View>
 
