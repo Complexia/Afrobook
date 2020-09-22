@@ -10,16 +10,21 @@ const fetchPostData = (navigation) => {
     const [data, setData] = useState([]);
 
     useEffect(() => {
-        fetch('http://192.168.1.103:3000/book')
+        fetch('http://192.168.1.103:3000/books/titles')
         .then((response) => response.json())
         .then((json) => setData(json))
         .catch((error) => console.error(error))
         .finally(() => setLoading(false));
     }, []);
     
+    if(!isLoading){
+        console.log(data);
+    }
+
     if(!isLoading && checker == 0) {
         assignData(data);
         checker = 1;
+        
         
         
     }
@@ -35,7 +40,7 @@ const fetchPostData = (navigation) => {
                 {
                     id: item.id,
                     title: item.title,
-                    content: item.content
+                    
                 } 
                 )}>
 
@@ -50,32 +55,33 @@ const fetchPostData = (navigation) => {
 
 
 function assignData(data) { //called when promise is fulfilled
-    console.log(data.length);
+    
     for(let i=0;i<data.length;i++){
 
         fetchedData.push (
             {
                 id: data[i]["_id"],
                 title: data[i]["Title"],
-                content: data[i]["Text"] 
+                
             }
         )
+        
     }
 
-     console.log(fetchedData[0].content);
+     
        
     
 }
 
 function downloadAll() {
     while(fetchedData.length == 0){
-        console.log("waiting for fetched data");
+        
     }
-    console.log("we are here");
+    
     for(let i=0;i<fetchedData.length;i++){
         AsyncStorage.setItem(fetchedData[i]["title"], JSON.stringify(fetchedData[i]));
     }
-    console.log("we are done");
+    
 }
 
 const displayData = async() => {

@@ -34,7 +34,7 @@ const App = () => {
   
 
   useEffect(() => {
-    fetch('http://192.168.1.103:3000/book')
+    fetch('http://192.168.1.103:3000/books')
       .then((response) => response.json()) 
       .then(data => setData(data))
       .catch((error) => console.error(error))
