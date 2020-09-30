@@ -1,14 +1,14 @@
 import React, { useEffect, useState }  from 'react';
 import { StyleSheet, View, Text, ActivityIndicator, SafeAreaView } from 'react-native';
 import { FlatList } from 'react-native-gesture-handler';
-
+import { FlipPage, FlipPagePage } from 'react-native-flip-page';
 
 const fetchData = (navigation, id) => {
 
     const [isLoading, setLoading] = useState(true);
     const [data, setData] = useState([]);
+    const uri = `http://afrostoryapibooks-env.eba-dm7hpfam.us-east-2.elasticbeanstalk.com/books/content/${id}`;
     
-    const uri = `http://192.168.1.103:3000/books/content/${id}`
 
     useEffect(() => {
         fetch(uri)
@@ -19,18 +19,23 @@ const fetchData = (navigation, id) => {
     }, []);
 
     if(!isLoading) {
-        console.log(data);
+       
     }
     return (
         <SafeAreaView style={styles.content}>
+            
             {isLoading ? <ActivityIndicator /> : (
-                <FlatList
-                    data = {data}
-                    keyExtractor={({ id }) => id}
-                    renderItem={({ item }) => (
-                        <Text style={styles.text}>{item.Text}</Text>
-                    )}
-                />
+                
+
+                    <FlatList
+                        data = {data}
+                        keyExtractor={({ id }) => id}
+                        renderItem={({ item }) => (
+                            
+                            <Text style={styles.text}>{item.Text}</Text>
+                        )}
+                    />
+                    
             )}
         </SafeAreaView>
     )

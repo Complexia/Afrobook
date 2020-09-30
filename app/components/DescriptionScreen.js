@@ -6,8 +6,8 @@ const fetchData = (navigation, id) => {
 
     const [isLoading, setLoading] = useState(true);
     const [data, setData] = useState([]);
+    const uri = `http://afrostoryapibooks-env.eba-dm7hpfam.us-east-2.elasticbeanstalk.com/books/description/${id}`;
     
-    const uri = `http://192.168.1.103:3000/books/description/${id}`
     useEffect(() => {
         fetch(uri)
         .then((response) => response.json())
