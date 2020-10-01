@@ -21,10 +21,7 @@ const fetchPostData = (navigation) => {
 
     
     
-    if(!isLoading){
-       // console.log(data);
-
-    }
+    
 
     if(!isLoading && checker == 0) {
         assignData(data);
@@ -67,64 +64,61 @@ const renderFlatList = (data, navigation) => {
     );
 }
 
-const returnData = (navigation) => {
+// const returnData = (navigation) => {
 
-    const [isLoading, setLoading] = useState(true);
-    const [data, setData] = useState([]);
-    const uri = "http://afrostoryapibooks-env.eba-dm7hpfam.us-east-2.elasticbeanstalk.com/books/titles";
+//     const [isLoading, setLoading] = useState(true);
+//     const [data, setData] = useState([]);
+//     const uri = "http://afrostoryapibooks-env.eba-dm7hpfam.us-east-2.elasticbeanstalk.com/books/titles";
 
-    async function fetchFromStorage(){
-        await getDataFromStorage()
-        .finally(() => setLoading(false));
-    };
-    fetchFromStorage();
+//     async function fetchFromStorage(){
+//         await getDataFromStorage()
+//         .finally(() => setLoading(false));
+//     };
+//     fetchFromStorage();
 
     
     
     
-    //Case when data downloaded vs when not downloaded
-    
-    
-       
-        
-    return (
-        <SafeAreaView>
+//     //Case data downloaded vs when not
+ 
+//     return (
+//         <SafeAreaView>
 
-            {isLoading ? <ActivityIndicator /> :(
+//             {isLoading ? <ActivityIndicator /> :(
     
     
-                titlesArr.length > 0 ? (
+//                 titlesArr.length > 0 ? (
         
                     
                     
-                    <SafeAreaView>
-                            <View>
+//                     <SafeAreaView>
+//                             <View>
         
-                                <Text>Hello</Text>
-                            </View>
+//                                 <Text>Data from storage</Text>
+//                             </View>
                         
-                    </SafeAreaView>
-                )
-                :
-                (
-                    <SafeAreaView>
+//                     </SafeAreaView>
+//                 )
+//                 :
+//                 (
+//                     <SafeAreaView>
         
-                            <View>
+//                             <View>
         
-                                <Text>Hi</Text>
-                            </View>
+//                                 <Text>Data from API</Text>
+//                             </View>
                         
-                    </SafeAreaView>
-                )
-            )}
+//                     </SafeAreaView>
+//                 )
+//             )}
 
-        </SafeAreaView>
+//         </SafeAreaView>
 
         
-    );
+//     );
     
    
-}
+// }
 
 
 function assignData(data) { //called when promise is fulfilled
@@ -181,15 +175,7 @@ const getDataFromStorage = async () => {
       const keys = await AsyncStorage.getAllKeys();
       
       await AsyncStorage.multiRemove(keys);
-      //const result = await AsyncStorage.multiGet(keys);
       
-      //console.log("overhere");
-      //const otherResult = await AsyncStorage.getItem("Darkwater Voices from within the Veil");
-      //console.log("Hello ", result[0]);
-      
-      //let parsed = JSON.parse(result[0][0]);
-      
-      //console.log(parsed);
       if(result.length > 0) {
         
         
@@ -197,7 +183,7 @@ const getDataFromStorage = async () => {
             assignTitles(JSON.parse(doc[1]).title, JSON.parse(doc[1]).id);
         });
 
-        //return result.map(req => assignTitles(JSON.parse(req[1]).title));
+        
         
       }
       else{

@@ -21,7 +21,8 @@ import DescriptionScreen from './app/components/DescriptionScreen';
 import ExperimentScreen2 from './app/components/ExperimentScreen2';
 import FlatListScreen from './app/components/FlatListScreen';
 import DownloadScreen from './app/components/DownloadScreen';
-
+import DescriptionAsyncScreen from './app/components/DescriptionAsyncScreen';
+import ReaderAsyncScreen from './app/components/ReaderAsyncScreen';
 const Stack = createStackNavigator();
 
 const App = () => {
@@ -40,6 +41,8 @@ const App = () => {
                     <Stack.Screen name="ExperimentScreen2" component= {ExperimentScreen2} />
                     <Stack.Screen name="FlatListScreen" component= {FlatListScreen} />
                     <Stack.Screen name="Download" component= {DownloadScreen} />
+                    <Stack.Screen name="DescriptionAsync" component = {DescriptionAsyncScreen}/>
+                    <Stack.Screen name="ReaderAsync" component = {ReaderAsyncScreen}/>
 
                     
                 </Stack.Navigator>

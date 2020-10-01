@@ -19,7 +19,7 @@ function assignTitles(title, id) {
 }
 const displayData = (navigation) => {
 
-    console.log("How many times?");
+    
     const [isLoading, setLoading] = useState(true);
     const [data, setData] = useState([]);
     
@@ -35,7 +35,7 @@ const displayData = (navigation) => {
     
     
     
-    console.log("Array length", titlesArr.length);
+    //console.log("Array length", titlesArr.length);
     return (
 
         <SafeAreaView>
@@ -63,7 +63,7 @@ const renderFlatList = (data, navigation) => {
                 keyExtractor={({ id }) => id}
                 renderItem={({ item }) => (
                     
-                    <TouchableWithoutFeedback onPress={() => navigation.navigate('Description',
+                    <TouchableWithoutFeedback onPress={() => navigation.navigate('DescriptionAsync',
                     {
                         id: item.id,
                         title: item.title,
@@ -85,39 +85,25 @@ const getDataFromStorage = async() => {
         let newKeys = [];
         const keys = await AsyncStorage.getAllKeys();
         
+        //every 12th value in the DB is id
         for(let i=0;i<keys.length;i++) {
            if (i % 12 == 0) {
                newKeys.push(keys[i]);
            }
         }
         
-        console.log("New keys",newKeys);
+        
         const result = await AsyncStorage.multiGet(newKeys);
         titlesArr = [];
         for(let i=0;i<newKeys.length;i++) {
             let id = newKeys[i];
-            let title = await AsyncStorage.getItem(id + "title");
-            //console.log(title);
+            let titleAsync = await AsyncStorage.getItem(id + "title");
+            let title = JSON.parse(titleAsync);
+            
             assignTitles(title, id);
         }
         
-        //console.log("result: ", result);
-        // if(result.length > 0) {
-            
-        //     return result.forEach(function (doc) {
-                
-        //         assignTitles(JSON.parse(doc[1]).title, JSON.parse(doc[1]).id);
-        //     });
-    
-        //     //return result.map(req => assignTitles(JSON.parse(req[1]).title));
-            
-        // }
-        // else {
-        //     return null;
-        // }
-
-        
-        
+      
     }
     catch(error) {
         alert(error);
