@@ -47,12 +47,7 @@ const styles = StyleSheet.create({
         backgroundColor: "goldenrod",
         alignItems: "center"
     },
-    logo: {
-       width: 100,
-       height: 100,
-       position: "absolute",
-       top: 80 
-    },
+    
     enterButtonText: {
         fontSize: 30,
         fontWeight: "bold",

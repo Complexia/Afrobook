@@ -15,7 +15,7 @@ const returnScreen = (navigation) => {
 
             <TouchableOpacity 
                     style={styles.enterButton} 
-                    onPress={() => navigation.navigate('Home')}
+                    onPress={() => navigation.navigate('Library')}
             >
 
                 <ImageBackground 
@@ -31,7 +31,7 @@ const returnScreen = (navigation) => {
 
             <TouchableOpacity 
                     style={styles.enterButton} 
-                    onPress={() => navigation.navigate('Home')}
+                    onPress={() => navigation.navigate('Titles')}
             >
 
                 <ImageBackground 
@@ -56,29 +56,7 @@ const returnScreen = (navigation) => {
     
     );
 }
-// const returnScreen = (navigation) => {
 
-//     return (
-//         <SafeAreaView>
-
-//             <View style={styles.touchableContainer}>
-
-//                 <TouchableOpacity style={styles.touchable}>
-//                     <Image source={libraryBooksImage} />
-//                 </TouchableOpacity>
-//             </View>
-
-//             <View style={styles.touchableContainer}>
-
-//                 <TouchableOpacity style={styles.touchable}>
-//                     <Image source={newBooksImage} />
-//                 </TouchableOpacity>
-//             </View>
-
-//         </SafeAreaView>
-        
-//     )
-// }
 
 
 

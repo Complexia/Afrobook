@@ -1,11 +1,12 @@
 import React, { useEffect, useState }  from 'react';
-import { SafeAreaView, Text, View, TouchableWithoutFeedback, AsyncStorage } from 'react-native';
+import { TouchableOpacity, StyleSheet, SafeAreaView, Text, View, TouchableWithoutFeedback, AsyncStorage, ActivityIndicator } from 'react-native';
 
 let checker = 0;
 
-const downloadAll = () => {
+const downloadAll = (navigation) => {
 
     const [isLoading, setLoading] = useState(true);
+    const [isGetting, setGetting] = useState(true);
     const [data, setData] = useState([]);
     const uri = "http://afrostoryapibooks-env.eba-dm7hpfam.us-east-2.elasticbeanstalk.com/books";
     useEffect(() => {
@@ -36,26 +37,64 @@ const downloadAll = () => {
             AsyncStorage.setItem(data[i]["_id"] + "content", JSON.stringify(data[i]["Text"]));
 
         }
+        setGetting(false);
     }
 
-}
-
-const DownloadScreen = ({ navigation }) => {
-    downloadAll();
     return (
-        <SafeAreaView>
+        <SafeAreaView style={styles.container}>
             <View>
                 
-            <TouchableWithoutFeedback onPress={() => navigation.navigate('Description'
-                     
-                    )}>
-
-                        <Text>Hello</Text>
-                    </TouchableWithoutFeedback>
+                {isLoading || isGetting ? <ActivityIndicator /> : (
+                    <View style={styles.container}>
+                        <Text>Done downloading</Text>
+                        <AppButton title="View Library" onPress={() => navigation.navigate('Library')} />
+                    </View>
+                )}
                     
             </View>
         </SafeAreaView>
+    )
+
+}
+
+const AppButton = ({ onPress, title }) => (
+    <TouchableOpacity onPress={onPress} style={styles.appButtonContainer}>
+        <Text style={styles.appButtonText}>{title}</Text>
+    </TouchableOpacity>
+);
+
+const DownloadScreen = ({ navigation }) => {
+    
+    return (
+        downloadAll(navigation)
     );
 }
+
+const styles = StyleSheet.create({
+    
+    appButtonContainer: {
+        elevation: 8,
+        backgroundColor: "goldenrod",
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        margin: 20,
+        
+        
+    },
+    appButtonText: {
+        fontSize: 18,
+        color: "#fff",
+        fontWeight: "bold",
+        alignSelf: "center",
+        textTransform: "uppercase"
+    },
+    container: {
+        justifyContent: "center",
+        alignItems: "center",
+        flex: 1
+        
+    }
+})
 
 export default DownloadScreen;

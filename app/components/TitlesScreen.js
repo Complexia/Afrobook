@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, StyleSheet, View, Text, Button, ActivityIndicator, FlatList, AsyncStorage } from 'react-native';
-import { TouchableWithoutFeedback, ScrollView } from 'react-native-gesture-handler';
+import { TouchableWithoutFeedback, TouchableOpacity, StyleSheet, View, Text, Button, ActivityIndicator, FlatList, AsyncStorage } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { set } from 'react-native-reanimated';
 
 let checker = 0; // to prevent fetchPostData from completing some functions more than once
@@ -195,7 +195,11 @@ const getDataFromStorage = async () => {
     }
   }
 
-
+const AppButton = ({ onPress, title }) => (
+    <TouchableOpacity onPress={onPress} style={styles.appButtonContainer}>
+        <Text style={styles.appButtonText}>{title}</Text>
+    </TouchableOpacity>
+);
 
 
 const TitlesScreen = ({ navigation }) => {
@@ -209,23 +213,11 @@ const TitlesScreen = ({ navigation }) => {
                 
             </View>
             <View style={styles.buttonLayer}>
-                <Button 
-                    style={styles.button} 
-                    title="Download all"
-                    onPress={() => downloadAll()}
-                >
-                    
-                </Button>
+                
+                <AppButton title="Download all" onPress={() => navigation.navigate('Download')} />
                 
             </View>
-            <View style={styles.buttonLayer}>
-                
-                <Button 
-                    style={styles.button} 
-                    title="Display Data"
-                    onPress={() => displayData()}
-                    ></Button>
-            </View>
+            
         </View>
 
     );
@@ -234,7 +226,6 @@ const TitlesScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        padding: "5%",
         bottom: 25
         
 
@@ -251,14 +242,33 @@ const styles = StyleSheet.create({
         
     },
     content: {
-        flex: 1
+        flex: 1,
+        padding: "3%"
     },
     buttonLayer: {
         flexDirection: "column",
         flex: -1,
         padding: "1%"
         
-    }
+    },
+
+    appButtonContainer: {
+        elevation: 8,
+        backgroundColor: "goldenrod",
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        margin: 20,
+        
+        
+    },
+    appButtonText: {
+        fontSize: 18,
+        color: "#fff",
+        fontWeight: "bold",
+        alignSelf: "center",
+        textTransform: "uppercase"
+    },
 
     
     

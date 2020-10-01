@@ -1,5 +1,5 @@
 import React from 'react';
-import { FlatList, View, Text, StyleSheet, AsyncStorage, TouchableWithoutFeedback, ActivityIndicator } from "react-native";
+import {TouchableOpacity, FlatList, View, Text, StyleSheet, AsyncStorage, TouchableWithoutFeedback, ActivityIndicator } from "react-native";
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useEffect, useState } from 'react';
 
@@ -38,7 +38,7 @@ const displayData = (navigation) => {
     //console.log("Array length", titlesArr.length);
     return (
 
-        <SafeAreaView>
+        <SafeAreaView style={styles.container}>
             
             
                 
@@ -47,13 +47,23 @@ const displayData = (navigation) => {
                 )
                 :
                 (
-                    <Text>Looks like your library is empty. Click Brows Titles to browse new books</Text>
+                    <View  style={styles.emptyContainer}>
+
+                        <Text>Wow, such empty. Click Browse Titles to browse new books</Text>
+                        <AppButton title="New books" onPress={() => navigation.navigate('Titles')} />
+                    </View>
                 )}
             
             
         </SafeAreaView>
     )
 }
+
+const AppButton = ({ onPress, title }) => (
+    <TouchableOpacity onPress={onPress} style={styles.appButtonContainer}>
+        <Text style={styles.appButtonText}>{title}</Text>
+    </TouchableOpacity>
+);
 
 const renderFlatList = (data, navigation) => {
     return (
@@ -114,7 +124,7 @@ const LibraryScreen = ({ navigation }) => {
 
     return (
         <View style={styles.container}>
-            <Text>Library books here</Text>
+            
             {displayData(navigation)}
             
         </View>
@@ -125,9 +135,37 @@ export default LibraryScreen;
 
 const styles = StyleSheet.create({
     container: {
-        justifyContent: "center",
-        alignItems: "center",
-        flex: 1
+        flex: 1,
+        padding: "5%",
+        bottom: 25
         
-    }
+    },
+    text: {
+        fontWeight: "bold",
+        fontSize: 20,
+        padding: "2%"
+
+    },
+    emptyContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
+    },
+    appButtonContainer: {
+        elevation: 8,
+        backgroundColor: "goldenrod",
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        margin: 20,
+        
+        
+    },
+    appButtonText: {
+        fontSize: 18,
+        color: "#fff",
+        fontWeight: "bold",
+        alignSelf: "center",
+        textTransform: "uppercase"
+    },
 })
