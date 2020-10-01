@@ -1,81 +1,147 @@
 import React from 'react';
-import { View, Text, StyleSheet, Button } from 'react-native';
-const HomeScreen = ({ navigation }) => {
+import { SafeAreaView, Image, ImageBackground, View, Text, StyleSheet, Button, TouchableOpacity } from 'react-native';
+
+
+
+const libraryBooksImage = require("../assets/libraryBooks.png");
+const newBooksImage = require("../assets/newBooks.jpeg");
+
+
+const returnScreen = (navigation) => {
+
     return (
-        
-        <View style={styles.container}>
 
-            <View style={styles.topContent}>
-               <Text>Image goes here</Text> 
-            </View>
+        <View style={styles.enterButton}>
 
-            <View style={styles.midContent}>
+            <TouchableOpacity 
+                    style={styles.enterButton} 
+                    onPress={() => navigation.navigate('Home')}
+            >
 
-                <View style={styles.buttons}>
+                <ImageBackground 
+                    source={libraryBooksImage}
+                    style={styles.background}
+                    imageStyle={{ resizeMode: 'stretch' }}
 
-                    <Button                        
-                        title="Browse books" 
-                        onPress={() => navigation.navigate("Titles")} />
+                >
+                    
+                </ImageBackground>
 
-                </View>
-                <View style={styles.buttons}>
+            </TouchableOpacity>
 
-                    <Button 
-                        title="View library" 
-                        onPress={() => navigation.navigate("Library")} />
-                </View>
+            <TouchableOpacity 
+                    style={styles.enterButton} 
+                    onPress={() => navigation.navigate('Home')}
+            >
 
-                <View style={styles.buttons}>
+                <ImageBackground 
+                    source={newBooksImage}
+                    style={styles.background}
+                    imageStyle={{ resizeMode: 'stretch' }}
 
-                    <Button 
-                        title="Download Screen" 
-                        onPress={() => navigation.navigate("Download")} />
-                </View>
-            </View>
+                >
+                    
+                </ImageBackground>
 
-            <View style={styles.bottomContent}>
-                <Text>Random promo titles go here</Text>
-            </View>
+            </TouchableOpacity>
 
         </View>
+
+        
+            
+            
+                
+    
+                    
+    
+    );
+}
+// const returnScreen = (navigation) => {
+
+//     return (
+//         <SafeAreaView>
+
+//             <View style={styles.touchableContainer}>
+
+//                 <TouchableOpacity style={styles.touchable}>
+//                     <Image source={libraryBooksImage} />
+//                 </TouchableOpacity>
+//             </View>
+
+//             <View style={styles.touchableContainer}>
+
+//                 <TouchableOpacity style={styles.touchable}>
+//                     <Image source={newBooksImage} />
+//                 </TouchableOpacity>
+//             </View>
+
+//         </SafeAreaView>
+        
+//     )
+// }
+
+
+
+
+
+
+const HomeScreen = ({ navigation }) => {
+
+
+    return (
+   
+        returnScreen(navigation)
+        
     );
 }
 
 const styles = StyleSheet.create({
-    container: {             
-        flex: 1
-    },
-    topContent: {
+    
+    background: {
+        width: "100%",
         flex: 1,
-        backgroundColor: "dodgerblue",
-        justifyContent: "center",
-        alignItems: "center"
-
+        justifyContent: "flex-end",
+        alignItems: "center",
         
+
     },
-    midContent: {
+    enterButton: {
+        width: "100%",
         flex: 1,
         backgroundColor: "goldenrod",
-        justifyContent: "center",
-        alignItems: "center",
-        flexDirection: "row",
-        
-    },
-    bottomContent: {
-        flex: 1,
-        backgroundColor: "tomato",
-        justifyContent: "center",
         alignItems: "center"
     },
-    buttons: {
-        flex: 0.3,
-        flexDirection: "row",
-        alignItems: "center",
-        justifyContent: "center",
+    
+    enterButtonText: {
+        fontSize: 30,
+        fontWeight: "bold",
+        fontStyle: "normal",
+        top: 10
+    },
+    appButtonContainer: {
+        elevation: 8,
+        backgroundColor: "goldenrod",
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        margin: 20,
         
+        
+    },
+    appButtonText: {
+        fontSize: 18,
+        color: "#fff",
+        fontWeight: "bold",
+        alignSelf: "center",
+        textTransform: "uppercase"
+    },
+    screenContainer: {
+        flex: 1,
+        justifyContent: "flex-end",
+        padding: 16,
+        alignSelf: "stretch"
 
-    }
-
+    },
 
 })
 
