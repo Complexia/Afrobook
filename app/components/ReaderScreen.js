@@ -53,7 +53,7 @@ const ReaderScreen = ({ route, navigation }) => {
 
     
     
-     const { id } = route.params;
+    const { id } = route.params;
 
     return (
         <View style={styles.container}>

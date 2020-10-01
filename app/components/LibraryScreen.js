@@ -6,7 +6,7 @@ import { useEffect, useState } from 'react';
 let titlesArr = [];
 
 
-function assignTitles(title, id, checker) {
+function assignTitles(title, id) {
     
 
     titlesArr.push (
@@ -19,11 +19,14 @@ function assignTitles(title, id, checker) {
 }
 const displayData = (navigation) => {
 
+    console.log("How many times?");
     const [isLoading, setLoading] = useState(true);
+    const [data, setData] = useState([]);
     
     async function getData() {
-        await getDataFromStorage();
+        await getDataFromStorage();   
     }
+    
     useEffect(() => {
         getData()
         .catch((error) => console.error(error))
@@ -37,16 +40,16 @@ const displayData = (navigation) => {
 
         <SafeAreaView>
             
-            {isLoading ? <ActivityIndicator /> : (
-
-                titlesArr.length > 0 ? (
+            
+                
+                {titlesArr.length > 0 && !isLoading ? (
                     renderFlatList(titlesArr, navigation)
                 )
                 :
                 (
                     <Text>Looks like your library is empty. Click Brows Titles to browse new books</Text>
-                )
-            )}
+                )}
+            
             
         </SafeAreaView>
     )
@@ -79,23 +82,39 @@ const renderFlatList = (data, navigation) => {
 
 const getDataFromStorage = async() => {
     try {
-
+        let newKeys = [];
         const keys = await AsyncStorage.getAllKeys();
-        const result = await AsyncStorage.multiGet(keys);
         
-        if(result.length > 0) {
+        for(let i=0;i<keys.length;i++) {
+           if (i % 12 == 0) {
+               newKeys.push(keys[i]);
+           }
+        }
+        
+        console.log("New keys",newKeys);
+        const result = await AsyncStorage.multiGet(newKeys);
+        titlesArr = [];
+        for(let i=0;i<newKeys.length;i++) {
+            let id = newKeys[i];
+            let title = await AsyncStorage.getItem(id + "title");
+            //console.log(title);
+            assignTitles(title, id);
+        }
+        
+        //console.log("result: ", result);
+        // if(result.length > 0) {
             
-            return result.forEach(function (doc) {
+        //     return result.forEach(function (doc) {
                 
-                assignTitles(JSON.parse(doc[1]).title, JSON.parse(doc[1]).id);
-            });
+        //         assignTitles(JSON.parse(doc[1]).title, JSON.parse(doc[1]).id);
+        //     });
     
-            //return result.map(req => assignTitles(JSON.parse(req[1]).title));
+        //     //return result.map(req => assignTitles(JSON.parse(req[1]).title));
             
-        }
-        else {
-            return null;
-        }
+        // }
+        // else {
+        //     return null;
+        // }
 
         
         

@@ -24,6 +24,13 @@ const HomeScreen = ({ navigation }) => {
                         title="View library" 
                         onPress={() => navigation.navigate("Library")} />
                 </View>
+
+                <View style={styles.buttons}>
+
+                    <Button 
+                        title="Download Screen" 
+                        onPress={() => navigation.navigate("Download")} />
+                </View>
             </View>
 
             <View style={styles.bottomContent}>

@@ -32,6 +32,7 @@ const fetchPostData = (navigation) => {
             
     }
     //downloadAll();
+    //getDataFromStorage();
 
     return (
         <View>
@@ -156,9 +157,9 @@ function downloadAll() {
     
     
     for(let i=0;i<fetchedData.length;i++){
-        //console.log(fetchedData[i]["title"]);
         
-        AsyncStorage.setItem(fetchedData[i]["title"], JSON.stringify(fetchedData[i]));
+        
+        AsyncStorage.setItem(fetchedData[i]["id"], JSON.stringify(fetchedData[i]));
     }
     
 }
@@ -179,8 +180,8 @@ const getDataFromStorage = async () => {
     try {
       const keys = await AsyncStorage.getAllKeys();
       
-      //await AsyncStorage.multiRemove(keys);
-      const result = await AsyncStorage.multiGet(keys);
+      await AsyncStorage.multiRemove(keys);
+      //const result = await AsyncStorage.multiGet(keys);
       
       //console.log("overhere");
       //const otherResult = await AsyncStorage.getItem("Darkwater Voices from within the Veil");

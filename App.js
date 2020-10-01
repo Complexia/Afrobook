@@ -20,6 +20,7 @@ import ExperimentScreen from './app/components/ExperimentScreen';
 import DescriptionScreen from './app/components/DescriptionScreen';
 import ExperimentScreen2 from './app/components/ExperimentScreen2';
 import FlatListScreen from './app/components/FlatListScreen';
+import DownloadScreen from './app/components/DownloadScreen';
 
 const Stack = createStackNavigator();
 
@@ -38,6 +39,7 @@ const App = () => {
                     <Stack.Screen name="Description" component= {DescriptionScreen} />
                     <Stack.Screen name="ExperimentScreen2" component= {ExperimentScreen2} />
                     <Stack.Screen name="FlatListScreen" component= {FlatListScreen} />
+                    <Stack.Screen name="Download" component= {DownloadScreen} />
 
                     
                 </Stack.Navigator>
