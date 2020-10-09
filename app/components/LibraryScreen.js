@@ -49,7 +49,7 @@ const displayData = (navigation) => {
                 (
                     <View  style={styles.emptyContainer}>
 
-                        <Text>Wow, such empty. Click Browse Titles to browse new books</Text>
+                        <Text>Wow, such empty. Click New Books to browse new books</Text>
                         <AppButton title="New books" onPress={() => navigation.navigate('Titles')} />
                     </View>
                 )}
@@ -68,23 +68,34 @@ const AppButton = ({ onPress, title }) => (
 const renderFlatList = (data, navigation) => {
     return (
         <SafeAreaView>
-            <FlatList
-                data={data}
-                keyExtractor={({ id }) => id}
-                renderItem={({ item }) => (
-                    
-                    <TouchableWithoutFeedback onPress={() => navigation.navigate('DescriptionAsync',
-                    {
-                        id: item.id,
-                        title: item.title,
-                        
-                    } 
-                    )}>
+            {data.length == 0 ? (
+                <View  style={styles.emptyContainer}>
 
-                        <Text style={styles.text}>{item.title}</Text>
-                    </TouchableWithoutFeedback>
-                )}
-            />
+                    <Text>Wow, such empty. Click New Books to browse new books</Text>
+                    <AppButton title="New books" onPress={() => navigation.navigate('Titles')} />
+                </View>
+            )
+            :
+            (
+
+                <FlatList
+                    data={data}
+                    keyExtractor={({ id }) => id}
+                    renderItem={({ item }) => (
+                        
+                        <TouchableWithoutFeedback onPress={() => navigation.navigate('DescriptionAsync',
+                        {
+                            id: item.id,
+                            title: item.title,
+                            
+                        } 
+                        )}>
+
+                            <Text style={styles.text}>{item.title}</Text>
+                        </TouchableWithoutFeedback>
+                    )}
+                />
+            )}
         </SafeAreaView>
     );
 }

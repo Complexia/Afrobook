@@ -1,7 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, { Component, useEffect, useState } from 'react';
 import { TouchableWithoutFeedback, TouchableOpacity, StyleSheet, View, Text, Button, ActivityIndicator, FlatList, AsyncStorage } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { set } from 'react-native-reanimated';
+import HamburgerIcon from './HamburgerIcon';
 
 let checker = 0; // to prevent fetchPostData from completing some functions more than once
 let fetchedData = []; //to be saved in async if button to download clicked
@@ -202,11 +203,13 @@ const AppButton = ({ onPress, title }) => (
 );
 
 
+
 const TitlesScreen = ({ navigation }) => {
   
     return (
+        
         <View style={styles.container}>
-
+            
             <View style={styles.content}>
                 
                 {fetchPostData(navigation)}
@@ -221,7 +224,9 @@ const TitlesScreen = ({ navigation }) => {
         </View>
 
     );
+    
 }
+
 
 const styles = StyleSheet.create({
     container: {

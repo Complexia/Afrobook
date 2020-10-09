@@ -23,34 +23,42 @@ import FlatListScreen from './app/components/FlatListScreen';
 import DownloadScreen from './app/components/DownloadScreen';
 import DescriptionAsyncScreen from './app/components/DescriptionAsyncScreen';
 import ReaderAsyncScreen from './app/components/ReaderAsyncScreen';
-const Stack = createStackNavigator();
+import HamburgerNavigation from './app/components/HamburgerNavigation';
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createDrawerNavigator } from '@react-navigation/drawer';
+
+
+const Tabs = createBottomTabNavigator();
+const HomeStack = createStackNavigator();
+
+const HomeStackScreen = () => {
+    return (
+        <HomeStack.Navigator>
+            <HomeStack.Screen name="Home" component={HomeScreen} options={{title: "Home"}} />
+            <HomeStack.Screen name="Titles" component={TitlesStackScreen} options={{title: "New books"}} />
+        </HomeStack.Navigator>
+    )
+}
+
+const TitlesStackScreen = () => {
+    return (
+        <HomeStack.Navigator>
+            <HomeStack.Screen name="Titles" component={TitlesScreen} options={{title: "New books"}} />
+            <HomeStack.Screen name="Description" component={DescriptionScreen} options={{title: "Description"}} />
+        </HomeStack.Navigator>
+    )
+}
+
+
 
 const App = () => {
-
-    
-        return (
-            
+        return (  
             <NavigationContainer>
-                <Stack.Navigator initialRouteName="Welcome">
-                    <Stack.Screen name="Welcome" component= {WelcomeScreen} />
-                    <Stack.Screen name="Home" component= {HomeScreen} />
-                    <Stack.Screen name="Titles" component= {TitlesScreen} />
-                    <Stack.Screen name="Library" component= {LibraryScreen} />
-                    <Stack.Screen name="Reader" component= {ReaderScreen} />
-                    <Stack.Screen name="Description" component= {DescriptionScreen} />
-                    <Stack.Screen name="ExperimentScreen2" component= {ExperimentScreen2} />
-                    <Stack.Screen name="FlatListScreen" component= {FlatListScreen} />
-                    <Stack.Screen name="Download" component= {DownloadScreen} />
-                    <Stack.Screen name="DescriptionAsync" component = {DescriptionAsyncScreen}/>
-                    <Stack.Screen name="ReaderAsync" component = {ReaderAsyncScreen}/>
-
-                    
-                </Stack.Navigator>
-                
-    
+                <Tabs.Navigator>
+                    <Tabs.Screen name="Home" component={HomeStackScreen} />
+                    <Tabs.Screen name="Library" component={LibraryScreen} />
+                </Tabs.Navigator>
             </NavigationContainer>
-            
-    
         );
 };
 
