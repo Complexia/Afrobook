@@ -26,11 +26,12 @@ const fetchData = (navigation, id) => {
 }
 
 const DescriptionScreen = ({ route, navigation }) => {
-
+    console.log("Are we here?");
     const { title } = route.params; 
     const { id } = route.params;
-    
-
+    // const title = "Sometitle";
+    // const id = "5f6bfcc09200d50499d08324";
+    console.log("From desc", title, id);
 
     
     return (

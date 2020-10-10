@@ -35,7 +35,17 @@ const HomeStackScreen = () => {
     return (
         <HomeStack.Navigator>
             <HomeStack.Screen name="Home" component={HomeScreen} options={{title: "Home"}} />
-            <HomeStack.Screen name="Titles" component={TitlesStackScreen} options={{title: "New books"}} />
+            <HomeStack.Screen name="Description" component={DescriptionStackScreen} options={{title: "Description"}} />
+        </HomeStack.Navigator>
+    )
+}
+
+
+const DescriptionStackScreen = () => {
+    return (
+        <HomeStack.Navigator initialRouteName="Description">
+            <HomeStack.Screen name="Description" component={DescriptionScreen} options={{title: "Description"}} />
+            <HomeStack.Screen name="Reader" component={ReaderScreen} options={{title: "Reader"}} />
         </HomeStack.Navigator>
     )
 }
@@ -61,6 +71,8 @@ const App = () => {
             </NavigationContainer>
         );
 };
+
+
 
 export default App;
 

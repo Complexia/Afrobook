@@ -11,7 +11,7 @@ let isFetching = true;
 let checker = 0;
 let isDone = false;
 let isGetting = true;
-let connectivityReturnValue = false;
+let connectivityReturnValue = true;
 
 function setFetching(value) {
     isFetching = value;
@@ -46,6 +46,8 @@ const fetchBooks = (whereFrom, navigation) => {
                     {   
                         id: interBook._id,
                         title: interBook.Title,
+                        author: interBook.Auth_Name,
+                        year: interBook.Year,
                         status: "fetched"
                     }
                     
@@ -53,21 +55,28 @@ const fetchBooks = (whereFrom, navigation) => {
                 
             }
         }
+        
         checker = 1;
         booksArr = storedBooksArr.map((book) => book);
         if(fetchedBooksArr.length > 0) {
-            
-            for(let storedBook of storedBooksArr) {
+            console.log(fetchedBooksArr);
+            for(let fetchedBook of fetchedBooksArr) {
                 
                 let indicator = 0;
-                let tempBook;
-                for(let fetchedBook of fetchedBooksArr) {
-                    if(storedBook.id == fetchedBook.id) {
+                let tempBook = fetchedBook;
+                
+                
+                for(let storedBook of storedBooksArr) {
+                    
+                    
+                    
+                    if(fetchedBook.id == storedBook.id) {
                         indicator = 1;
                         break;
                     }
-                    tempBook = fetchedBook;
+ 
                 }
+                
                 if(indicator == 0) {
                     booksArr.push(tempBook)
                 }
@@ -89,12 +98,28 @@ const fetchBooks = (whereFrom, navigation) => {
 
 }
 
-const Item = ({ item, onPress, style }) => (
-    <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
+const Item = ({ item, style, navigation }) => {
+    return (
+    
+    <TouchableOpacity 
+
+        onPress={() => navigation.navigate('Description',
+        {
+            screen: 'Description',
+            params: {
+                id: item.id,
+                title: item.title,    
+            }
+        } 
+        )} 
+
+        style={[styles.item, style]}>
+
       <Text style={styles.title}>{item.title}</Text>
       <Text>{item.author} {item.year}</Text>
     </TouchableOpacity>
-);
+   )
+};
 
 
 const getData = async(whereFrom) => {
@@ -139,28 +164,41 @@ const getData = async(whereFrom) => {
         }
     }
     else {
-        await checkConnectivity();
-        if(connectivityReturnValue) {
-            try {
-                const uri = "http://afrostoryapibooks-env.eba-dm7hpfam.us-east-2.elasticbeanstalk.com/books/titles";
-                await fetch(uri)
-                .then((response) => response.json())
-                .then((json) => interFetchedBooksArr.push(json))         
-                .catch(function(error) {
+        //await checkConnectivity()
+        
+        await checkConnectivity()
+        .then(async function(result) { 
+            if(connectivityReturnValue) {
+                
+                try {
+                    const uri = "http://afrostoryapibooks-env.eba-dm7hpfam.us-east-2.elasticbeanstalk.com/books/titles";
+                    await fetch(uri)
+                    .then((response) => response.json())
+                    .then((json) => interFetchedBooksArr.push(json))         
+                    .catch(function(error) {
+                        console.log("You are offline");
+                        
+                    })
+                    .finally(() => setFetching(false));
+                }
+                catch(error) {
                     console.log("You are offline");
-                    
-                })
-                .finally(() => setFetching(false));
+        
+                }
+                
+                
             }
-            catch(error) {
-                console.log("You are offline");
+            else {
+                console.log("You are ofline");
+                setFetching(false);
+            }
+
+        })
+        .catch(err => {
+            console.log("Error")
+        })
+
     
-            }
-        }
-        else {
-            console.log("You are offline");
-            setFetching(false);
-        }
     }
 }
 
@@ -172,15 +210,12 @@ const renderFlatList = (data, navigation) => {
                 keyExtractor={({ id }) => id}
                 renderItem={({ item }) => {
                     const backgroundColor = item.status === "stored" ? "#6e3b6e" : "#f9c2ff";
-
                     return (
                         <Item
                             item={item}
-                            onPress={() => navigation.navigate('Description', {
-                                id: item.id,
-                                title: item.title
-                            })}
+                            
                             style={{ backgroundColor }}
+                            navigation={ navigation }
                         />
                     )
                 }}
@@ -203,16 +238,18 @@ const returnScreen = (navigation) => {
 
     
 
-const checkConnectivity = () => {
+const checkConnectivity = async() => {
     // For Android devices
     if (Platform.OS === "android") {
         NetInfo.fetch().then(isConnected => {
         if (isConnected) {
             //Alert.alert("You are online!");
             connectivityReturnValue = true;
+            return true;
         } else {
             //Alert.alert("You are offline!");
             connectivityReturnValue = false;
+            return false;
         }
         });
     } 
@@ -235,9 +272,11 @@ const handleFirstConnectivityChange = isConnected => {
     if (!isConnected) {
         //Alert.alert("You are offline!");
         connectivityReturnValue = false;
+        return true;
     } else {
         //Alert.alert("You are online!");
         connectivityReturnValue = true;
+        return false;
     }
 };
 
