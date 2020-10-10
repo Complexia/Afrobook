@@ -1,5 +1,5 @@
-import React, { Component, useEffect, useState } from 'react';
-import { SafeAreaView, Image, ImageBackground, View, Alert, TouchableWithoutFeedback, Text, StyleSheet, Button, TouchableOpacity, ActivityIndicator, FlatList, AsyncStorage, Platform } from 'react-native';
+import React, { useEffect, useState } from 'react';
+import { SafeAreaView, Image, ImageBackground, View, Alert, Text, StyleSheet, TouchableOpacity, ActivityIndicator, FlatList, AsyncStorage, Platform } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
 
 
@@ -57,7 +57,18 @@ const fetchBooks = (whereFrom, navigation) => {
         }
         
         checker = 1;
-        booksArr = storedBooksArr.map((book) => book);
+        booksArr.push (
+            {   
+                id: "libraryTag",
+                title: "Library",
+                status: "tag"
+            }
+        )
+        console.log("booskkks", booksArr);
+        //booksArr = storedBooksArr.map((book) => book);
+        for(let storedBook of storedBooksArr) {
+            booksArr.push(storedBook);
+        }
         if(fetchedBooksArr.length > 0) {
             console.log(fetchedBooksArr);
             for(let fetchedBook of fetchedBooksArr) {
@@ -67,9 +78,7 @@ const fetchBooks = (whereFrom, navigation) => {
                 
                 
                 for(let storedBook of storedBooksArr) {
-                    
-                    
-                    
+
                     if(fetchedBook.id == storedBook.id) {
                         indicator = 1;
                         break;
@@ -83,14 +92,16 @@ const fetchBooks = (whereFrom, navigation) => {
             }
         }
         
-
         isDone = true;
     }
 
     return (
         <SafeAreaView>
             {!isDone ? <ActivityIndicator /> : (
+                
+                    
                 renderFlatList(booksArr, navigation)
+                
             )}
         </SafeAreaView>
         
@@ -98,26 +109,86 @@ const fetchBooks = (whereFrom, navigation) => {
 
 }
 
-const Item = ({ item, style, navigation }) => {
+const LibraryTag = () => {
     return (
-    
-    <TouchableOpacity 
+        <View>
+            <Text>Library</Text>
+            <Text>6 books</Text>
+        </View>
+    )
+}
 
-        onPress={() => navigation.navigate('Description',
-        {
-            screen: 'Description',
-            params: {
-                id: item.id,
-                title: item.title,    
+const Item = ({ item, style, navigation, downloaded, bookCount }) => {
+    return (
+
+        <View>
+            {downloaded === "" ? (
+                
+                <View style={styles.libraryTag}>
+                    <Text style={styles.title}>{item.title}</Text>
+                    <Text style={styles.titleProps}>{bookCount} books</Text>
+                </View>
+            )
+            :
+            (
+                <TouchableOpacity
+                    onPress={() => navigation.navigate('Description',
+                    {
+                        screen: 'Description',
+                        params: {
+                            id: item.id,
+                            title: item.title,    
+                        }
+                    } 
+                    )}
+                    style={[styles.item, style]}>
+
+                        <Text style={styles.title}>{item.title}</Text>
+                        <Text style={styles.titleProps}>{item.author} {item.year}</Text>
+                        <Text style={styles.downloadedProp}>{downloaded}</Text>
+                    </TouchableOpacity> 
+            )
             }
-        } 
-        )} 
+        </View>
+    
 
-        style={[styles.item, style]}>
 
-      <Text style={styles.title}>{item.title}</Text>
-      <Text>{item.author} {item.year}</Text>
-    </TouchableOpacity>
+
+
+
+
+
+    // <TouchableOpacity 
+
+    //     onPress={() => navigation.navigate('Description',
+    //     {
+    //         screen: 'Description',
+    //         params: {
+    //             id: item.id,
+    //             title: item.title,    
+    //         }
+    //     } 
+    //     )} 
+
+    //     style={[styles.item, style]}>
+
+    //   <Text style={styles.title}>{item.title}</Text>
+    //   {downloaded === "" ? 
+    //   (
+    //     <Text style={styles.titleProps}>{item.bookCount}</Text>
+    //   )
+    //   :
+    //   (
+    //     <View>
+
+    //         <Text style={styles.titleProps}>{item.author} {item.year}</Text>
+    //         <Text style={styles.downloadedProp}>{downloaded}</Text>
+    //     </View>
+    //   )}
+      
+      
+      
+    // </TouchableOpacity>
    )
 };
 
@@ -189,7 +260,7 @@ const getData = async(whereFrom) => {
                 
             }
             else {
-                console.log("You are ofline");
+                console.log("You are offline");
                 setFetching(false);
             }
 
@@ -209,13 +280,31 @@ const renderFlatList = (data, navigation) => {
                 data={data}
                 keyExtractor={({ id }) => id}
                 renderItem={({ item }) => {
-                    const backgroundColor = item.status === "stored" ? "#6e3b6e" : "#f9c2ff";
+                    //const backgroundColor = item.status === "stored" ? "#ee5535" : "#22236a";
+                    let backgroundColor = "black";
+                    if(item.status == "stored") {
+                        backgroundColor = "#ee5535";
+                    }
+                    else if(item.status == "fetched") {
+                        backgroundColor = "#22236a"
+                    }
+
+                    let downloaded = "";
+                    if(item.status == "stored") {
+                        downloaded = "Downloaded";
+                    }
+                    else if(item.status == "fetched") {
+                        downloaded = "Not downloaded"
+                    }
+                    
                     return (
                         <Item
                             item={item}
                             
                             style={{ backgroundColor }}
                             navigation={ navigation }
+                            downloaded = {downloaded}
+                            bookCount = {data.length -1}
                         />
                     )
                 }}
@@ -292,6 +381,7 @@ const styles = StyleSheet.create({
     
     background: {
         flex: 1,   
+        backgroundColor: "black"
     },
     text: {
         fontWeight: "bold",
@@ -302,10 +392,24 @@ const styles = StyleSheet.create({
         padding: 20,
         marginVertical: 8,
         marginHorizontal: 16,
+        borderRadius: 10
     },
     title: {
         fontSize: 32,
+        color: "#FFFFFF"
     },
+    titleProps: {
+        color: "#C0C0C0"
+    },
+    downloadedProp: {
+        color: "#C0C0C0",
+        alignSelf: "flex-end"
+
+    },
+    libraryTag: {
+        padding: 20
+    }
+
 
 })
 
