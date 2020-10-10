@@ -2,8 +2,6 @@ import React, { Component, useEffect, useState } from 'react';
 import { SafeAreaView, Image, ImageBackground, View, Alert, TouchableWithoutFeedback, Text, StyleSheet, Button, TouchableOpacity, ActivityIndicator, FlatList, AsyncStorage, Platform } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
 
-const libraryBooksImage = require("../assets/libraryBooks.png");
-const newBooksImage = require("../assets/newBooks.jpeg");
 
 let storedBooksArr = [];
 let interFetchedBooksArr = [];
@@ -57,8 +55,6 @@ const fetchBooks = (whereFrom, navigation) => {
         }
         checker = 1;
         booksArr = storedBooksArr.map((book) => book);
-        console.log("fetchedBook",fetchedBooksArr);
-        console.log("storedBook",fetchedBooksArr);
         if(fetchedBooksArr.length > 0) {
             
             for(let storedBook of storedBooksArr) {
@@ -93,6 +89,12 @@ const fetchBooks = (whereFrom, navigation) => {
 
 }
 
+const Item = ({ item, onPress, style }) => (
+    <TouchableOpacity onPress={onPress} style={[styles.item, style]}>
+      <Text style={styles.title}>{item.title}</Text>
+      <Text>{item.author} {item.year}</Text>
+    </TouchableOpacity>
+);
 
 
 const getData = async(whereFrom) => {
@@ -102,7 +104,7 @@ const getData = async(whereFrom) => {
         try {
             let newKeys = [];
             const keys = await AsyncStorage.getAllKeys();
-            
+           
             //every 12th value in the DB is id
             for(let i=0;i < keys.length-4;i++) {
                if (i % 12 == 0) {
@@ -114,12 +116,17 @@ const getData = async(whereFrom) => {
             for(let i=0;i<newKeys.length;i++) {
                 let id = newKeys[i];
                 let titleAsync = await AsyncStorage.getItem(id + "title");
+                let authorAsync = await AsyncStorage.getItem(id + "authorName");
+                let yearAsync = await AsyncStorage.getItem(id + "year");
                 let title = JSON.parse(titleAsync);
-                
+                let author = JSON.parse(authorAsync);
+                let year = JSON.parse(yearAsync);
                 storedBooksArr.push(
                     {
                         id: id,
                         title: title,
+                        author: author,
+                        year: year,
                         status: "stored"
                     }
                 )
@@ -163,31 +170,32 @@ const renderFlatList = (data, navigation) => {
             <FlatList
                 data={data}
                 keyExtractor={({ id }) => id}
-                renderItem={({ item }) => (
-                    
-                    <TouchableWithoutFeedback onPress={() => navigation.navigate('Description',
-                    {
-                        id: item.id,
-                        title: item.title,
-                        
-                    } 
-                    )}>
+                renderItem={({ item }) => {
+                    const backgroundColor = item.status === "stored" ? "#6e3b6e" : "#f9c2ff";
 
-                        <Text style={styles.text}>{item.title}</Text>
-                    </TouchableWithoutFeedback>
-                )}
+                    return (
+                        <Item
+                            item={item}
+                            onPress={() => navigation.navigate('Description', {
+                                id: item.id,
+                                title: item.title
+                            })}
+                            style={{ backgroundColor }}
+                        />
+                    )
+                }}
             />
+
         </SafeAreaView>
     );
 }
 
 const returnScreen = (navigation) => {
-    fetchBooks("async") 
+    fetchBooks("async", navigation) 
     return (
-       
-    
+          
      <SafeAreaView style={styles.background}>
-         {fetchBooks()}
+         {fetchBooks("fetched", navigation)}
      </SafeAreaView>
     );
 }
@@ -235,7 +243,6 @@ const handleFirstConnectivityChange = isConnected => {
 
 const HomeScreen = ({ navigation }) => {
 
-
     return (
          returnScreen(navigation)
         
@@ -251,6 +258,14 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         fontSize: 20,
         padding: "2%"
+    },
+    item: {
+        padding: 20,
+        marginVertical: 8,
+        marginHorizontal: 16,
+    },
+    title: {
+        fontSize: 32,
     },
 
 })
