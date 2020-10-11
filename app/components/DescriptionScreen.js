@@ -1,53 +1,154 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, Button, ActivityIndicator } from "react-native";
+import { SafeAreaView, View, Text, StyleSheet, Button, ActivityIndicator, AsyncStorage, TouchableOpacity } from "react-native";
 
 
-const fetchData = (navigation, id) => {
+let isFetching = true;
+let checker = 0;
+let isDone = false;
+let isGetting = true;
+let descriptionArr = [];
 
-    const [isLoading, setLoading] = useState(true);
-    const [data, setData] = useState([]);
-    const uri = `http://afrostoryapibooks-env.eba-dm7hpfam.us-east-2.elasticbeanstalk.com/books/description/${id}`;
+function setFetching(value) {
+    isFetching = value;
+}
+
+const AppButton = ({ onPress, title }) => (
+    <TouchableOpacity onPress={onPress} style={styles.appButtonContainer}>
+      <Text style={styles.appButtonText}>{title}</Text>
+    </TouchableOpacity>
+);
+
+const fetchDesc = (navigation, id, status, title, author, year, descArr) => {
     
-    useEffect(() => {
-        fetch(uri)
-        .then((response) => response.json())
-        .then((json) => setData(json))
-        .catch((error) => console.error(error))
-        .finally(() => setLoading(false));
-    }, []);
+    if(descArr.length == 0) {
+        isDone = false;
+    }
+    
+    let whereFrom = "fetch";
+    if(status == "stored") {
+        whereFrom = "async";
+    }
+    
+    const [isLoading, setLoading] = useState(true);
+    try {
+        console.log(whereFrom);
+        useEffect(() => {
+            getData(whereFrom, id, title, author, year, descArr)
+            .catch(function(error) {
+                console.log("caught this");
+                
+            })
+            .finally(() => setLoading(false));
+        }, []);
+    }
+    catch(error) {
+        console.log("caught this here");
+    }
+    console.log(descArr.length);
+    if(!isLoading && !isFetching && descArr.length > 0) {
+        //console.log("Yippi", descArr);
+        isDone = true;
 
+    }
     return (
-        <View>
-            {isLoading ? <ActivityIndicator /> :(
-                <Text>{data[0]["Description"]}</Text>
-            )}
-        </View>
-    );
+        
+            !isDone ? <ActivityIndicator /> :(
+                
+                renderDesc(navigation, id, title, author, year, descArr[0]["description"], status)
+            )
+        
+    )
+}
+
+const renderDesc = (navigation, id, title, author, year, description, status) => {
+    return (
+        <SafeAreaView style={styles.container}>
+
+            <Text style={styles.titleText}>{title}</Text>
+            <Text style={styles.authorText}>by {author}, {year}</Text>
+            <View style={styles.borderLine}></View>
+            <Text style={styles.descriptionText}>{description}</Text>
+
+            {status === "stored" ?
+                (
+                    <AppButton title="Read" onPress={() => navigation.navigate('Reader', {
+                        id: id
+                    })} />
+                )
+                :
+                (
+                    <AppButton title="Download" onPress={() => navigation.navigate('Reader')} />
+                )
+            }
+
+        </SafeAreaView>
+    )
+}
+const getData = async(whereFrom, id, title, author, year, descArr) => {
+
+    if(whereFrom == "async") {
+        
+        try {
+
+            let descriptionAsync = await AsyncStorage.getItem(id + "description");
+            let description = JSON.parse(descriptionAsync);
+            descArr.push(
+                {
+                    id: id,
+                    title: title,
+                    description: description,
+                    author: author,
+                    year: year
+                }
+            );
+            setFetching(false);
+        }
+        catch(error) {
+            alert(error);
+        }
+    }
+    else {
+        
+        try {
+            
+            const uri = `http://afrostoryapibooks-env.eba-dm7hpfam.us-east-2.elasticbeanstalk.com/books/description/${id}`;
+            await fetch(uri)
+            .then((response) => response.json())
+            .then((json) => descArr.push(
+                {
+                    id: id,
+                    title: title,
+                    description: json[0]["Description"],
+                    author: author,
+                    year: year
+                }))         
+            .catch((error) => console.error(error))
+            .finally(() => setFetching(false));
+        }
+        catch(error) {
+            console.log("Network request failed.");
+
+        }
+  
+    }
 }
 
 const DescriptionScreen = ({ route, navigation }) => {
-    console.log("Are we here?");
+   
     const { title } = route.params; 
     const { id } = route.params;
-    // const title = "Sometitle";
-    // const id = "5f6bfcc09200d50499d08324";
-    console.log("From desc", title, id);
+    const { year } = route.params;
+    const { author } = route.params;
+    const { status } = route.params;
+    let { descArr } = route.params;
 
+    console.log("From desc", title, id, year, author, status);
+    
     
     return (
-        <View style={styles.container}>
-            <Text>Description of the book</Text>
-            <Text>{title}</Text>
-            
-            {fetchData(navigation, id)}
-            <Button title="Read book" onPress={() => navigation.navigate("Reader",
-            {   
-                id: id
-                
-            })}>
-                
-            </Button>
-        </View>
+
+            fetchDesc(navigation, id, status, title, author, year, descArr)
+        
     );
 }
 
@@ -55,9 +156,43 @@ export default DescriptionScreen;
 
 const styles = StyleSheet.create({
     container: {
-        justifyContent: "flex-start",
-        alignItems: "flex-start",
-        padding: "2%"
+        flex: 1,
+        padding: 20,
+        backgroundColor: "black"
         
-    }
+    },
+    titleText: {
+        fontWeight: "bold",
+        fontSize: 40,
+        color: "#FFFFFF"
+        
+    },
+    authorText: {
+        color: "#C0C0C0"
+    },
+    descriptionText: {
+        color: "#C0C0C0"
+    },
+    borderLine: {
+        borderBottomColor: "#FFFFFF",
+        borderBottomWidth: 1,
+        padding: 10,
+        marginBottom: 10
+    },
+    appButtonContainer: {
+        elevation: 8,
+        backgroundColor: "#ee5535",
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        marginTop: 10
+   
+    },
+    appButtonText: {
+        fontSize: 18,
+        color: "#fff",
+        fontWeight: "bold",
+        alignSelf: "center",
+        textTransform: "uppercase"
+    },
 })

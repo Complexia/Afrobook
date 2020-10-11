@@ -64,13 +64,11 @@ const fetchBooks = (whereFrom, navigation) => {
                 status: "tag"
             }
         )
-        console.log("booskkks", booksArr);
-        //booksArr = storedBooksArr.map((book) => book);
+        
         for(let storedBook of storedBooksArr) {
             booksArr.push(storedBook);
         }
         if(fetchedBooksArr.length > 0) {
-            console.log(fetchedBooksArr);
             for(let fetchedBook of fetchedBooksArr) {
                 
                 let indicator = 0;
@@ -119,6 +117,7 @@ const LibraryTag = () => {
 }
 
 const Item = ({ item, style, navigation, downloaded, bookCount }) => {
+    let descriptionArr = [];
     return (
 
         <View>
@@ -137,7 +136,11 @@ const Item = ({ item, style, navigation, downloaded, bookCount }) => {
                         screen: 'Description',
                         params: {
                             id: item.id,
-                            title: item.title,    
+                            title: item.title,
+                            author: item.author,
+                            year: item.year,
+                            status: item.status,
+                            descArr: descriptionArr    
                         }
                     } 
                     )}
@@ -152,43 +155,6 @@ const Item = ({ item, style, navigation, downloaded, bookCount }) => {
         </View>
     
 
-
-
-
-
-
-
-    // <TouchableOpacity 
-
-    //     onPress={() => navigation.navigate('Description',
-    //     {
-    //         screen: 'Description',
-    //         params: {
-    //             id: item.id,
-    //             title: item.title,    
-    //         }
-    //     } 
-    //     )} 
-
-    //     style={[styles.item, style]}>
-
-    //   <Text style={styles.title}>{item.title}</Text>
-    //   {downloaded === "" ? 
-    //   (
-    //     <Text style={styles.titleProps}>{item.bookCount}</Text>
-    //   )
-    //   :
-    //   (
-    //     <View>
-
-    //         <Text style={styles.titleProps}>{item.author} {item.year}</Text>
-    //         <Text style={styles.downloadedProp}>{downloaded}</Text>
-    //     </View>
-    //   )}
-      
-      
-      
-    // </TouchableOpacity>
    )
 };
 
@@ -235,7 +201,6 @@ const getData = async(whereFrom) => {
         }
     }
     else {
-        //await checkConnectivity()
         
         await checkConnectivity()
         .then(async function(result) { 
@@ -268,8 +233,7 @@ const getData = async(whereFrom) => {
         .catch(err => {
             console.log("Error")
         })
-
-    
+   
     }
 }
 
@@ -280,7 +244,7 @@ const renderFlatList = (data, navigation) => {
                 data={data}
                 keyExtractor={({ id }) => id}
                 renderItem={({ item }) => {
-                    //const backgroundColor = item.status === "stored" ? "#ee5535" : "#22236a";
+
                     let backgroundColor = "black";
                     if(item.status == "stored") {
                         backgroundColor = "#ee5535";
@@ -325,8 +289,6 @@ const returnScreen = (navigation) => {
 }
 
 
-    
-
 const checkConnectivity = async() => {
     // For Android devices
     if (Platform.OS === "android") {
@@ -342,8 +304,8 @@ const checkConnectivity = async() => {
         }
         });
     } 
-    else {
-        // For iOS devices
+    // For iOS devices
+    else {       
         NetInfo.addEventListener(
         "connectionChange",
         this.handleFirstConnectivityChange
