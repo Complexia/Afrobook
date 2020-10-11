@@ -1,68 +1,140 @@
 import React, { useEffect, useState }  from 'react';
-import { StyleSheet, View, Text, ActivityIndicator, SafeAreaView } from 'react-native';
-import { FlatList } from 'react-native-gesture-handler';
-import { FlipPage, FlipPagePage } from 'react-native-flip-page';
+import { FlatList, StyleSheet, View, Text, ActivityIndicator, SafeAreaView, AsyncStorage } from 'react-native';
 
-const fetchData = (navigation, id) => {
 
-    const [isLoading, setLoading] = useState(true);
-    const [data, setData] = useState([]);
-    const uri = `http://afrostoryapibooks-env.eba-dm7hpfam.us-east-2.elasticbeanstalk.com/books/content/${id}`;
+
+let isFetching = true;
+let isDone = false;
+
+function setFetching(value) {
+    isFetching = value;
+}
+
+const fetchContent = (id, status, title, author, year, contentArr) => {
     
+    if(contentArr.length == 0) {
+        isDone = false;
+    }
+    
+    let whereFrom = "fetch";
+    if(status == "stored") {
+        whereFrom = "async";
+    }
+    
+    const [isLoading, setLoading] = useState(true);
+    try {
+        console.log(whereFrom);
+        useEffect(() => {
+            getData(whereFrom, id, title, author, year, contentArr)
+            .catch(function(error) {
+                console.log("caught this");
+                
+            })
+            .finally(() => setLoading(false));
+        }, []);
+    }
+    catch(error) {
+        console.log("caught this here");
+    }
+    console.log(contentArr.length);
+    if(!isLoading && !isFetching && contentArr.length > 0) {
+        //console.log("Yippi", contentArr);
+        isDone = true;
 
-    useEffect(() => {
-        fetch(uri)
-        .then((response) => response.json())
-        .then((json) => setData(json))
-        .catch((error) => console.error(error))
-        .finally(() => setLoading(false));
-    }, []);
-
-    if(!isLoading) {
-       
     }
     return (
-        <SafeAreaView style={styles.content}>
-            
-            {isLoading ? <ActivityIndicator /> : (
+        
+            !isDone ? <ActivityIndicator /> :(
                 
-
-                    <FlatList
-                        data = {data}
-                        keyExtractor={({ id }) => id}
-                        renderItem={({ item }) => (
-                            
-                            <Text style={styles.text}>{item.Text}</Text>
-                        )}
-                    />
-                    
-            )}
-        </SafeAreaView>
+                renderFlatList(id, contentArr[0]["content"])
+            )
+        
     )
 }
 
-const Item = ({ body }) => (
-    <SafeAreaView>
-      <Text style={styles.text}>{body}</Text>
-    </SafeAreaView>
-  );
+const getData = async(whereFrom, id, title, author, year, contentArr) => {
 
-let content = "sdsdsds";
+    if(whereFrom == "async") {
+        let cArr = [];
+        try {
+
+            let contentAsync = await AsyncStorage.getItem(id + "content");
+            let content = JSON.parse(contentAsync);
+            cArr.push(content);
+            contentArr.push(
+                {
+                    id: id,
+                    title: title,
+                    content: cArr,
+                    author: author,
+                    year: year
+                }
+            );
+            setFetching(false);
+        }
+        catch(error) {
+            alert(error);
+        }
+    }
+    else {
+        
+        try {
+            const uri = `http://afrostoryapibooks-env.eba-dm7hpfam.us-east-2.elasticbeanstalk.com/books/content/${id}`;
+            await fetch(uri)
+            .then((response) => response.json())
+            
+            
+            .then((json) => contentArr.push(
+                {
+                    id: id,
+                    title: title,
+                    content: [json[0]["Text"]],
+                    author: author,
+                    year: year
+                }))         
+            .catch((error) => console.error(error))
+            .finally(() => setFetching(false));
+        }
+        catch(error) {
+            console.log("Network request failed.");
+
+        }
+  
+    }
+}
+
+const renderFlatList = (id, data) => {
+    return (
+
+        <FlatList
+        data = {data}
+        keyExtractor={({ id }) => id}
+        renderItem={({ item }) => (
+            
+            <Text style={styles.text}>{item}</Text>
+        )}
+        />
+    )
+}
+
 
 const ReaderScreen = ({ route, navigation }) => {
 
-    
-    
     const { id } = route.params;
+    const { title } = route.params;
+    const { author } = route.params;
+    const { year } = route.params;
+    const { status } = route.params;
+    let { contentArr } = route.params;
 
     return (
-        <View style={styles.container}>
-            <Text style={styles.text}>The book text here</Text>
+        <SafeAreaView style={styles.container}>
+            <Text style={styles.text}>The book text here. Actually?</Text>
             
-            {fetchData(navigation, id)}
+            {fetchContent(id, status, title, author, year, contentArr)}
             
 
-        </View>
+        </SafeAreaView>
     );
 }
 

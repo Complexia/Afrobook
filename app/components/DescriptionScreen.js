@@ -3,10 +3,8 @@ import { SafeAreaView, View, Text, StyleSheet, Button, ActivityIndicator, AsyncS
 
 
 let isFetching = true;
-let checker = 0;
 let isDone = false;
-let isGetting = true;
-let descriptionArr = [];
+
 
 function setFetching(value) {
     isFetching = value;
@@ -61,6 +59,7 @@ const fetchDesc = (navigation, id, status, title, author, year, descArr) => {
 }
 
 const renderDesc = (navigation, id, title, author, year, description, status) => {
+    contentArr = [];
     return (
         <SafeAreaView style={styles.container}>
 
@@ -72,12 +71,24 @@ const renderDesc = (navigation, id, title, author, year, description, status) =>
             {status === "stored" ?
                 (
                     <AppButton title="Read" onPress={() => navigation.navigate('Reader', {
-                        id: id
+                        id: id,
+                        title: title,
+                        author: author,
+                        year: year,
+                        status: status,
+                        contentArr: contentArr
                     })} />
                 )
                 :
                 (
-                    <AppButton title="Download" onPress={() => navigation.navigate('Reader')} />
+                    <AppButton title="Download" onPress={() => navigation.navigate('Reader', {
+                        id: id,
+                        title: title,
+                        author: author,
+                        year: year,
+                        status: status,
+                        contentArr: contentArr
+                    })} />
                 )
             }
 
