@@ -1,5 +1,6 @@
-import React, { useEffect, useState }  from 'react';
-import { FlatList, StyleSheet, View, Text, ActivityIndicator, SafeAreaView, AsyncStorage } from 'react-native';
+import React, { useEffect, useState, createRef }  from 'react';
+import { FlatList, Button, StyleSheet, View, Text, ActivityIndicator, SafeAreaView, AsyncStorage, Dimensions } from 'react-native';
+
 
 
 
@@ -23,7 +24,7 @@ const fetchContent = (id, status, title, author, year, contentArr) => {
     
     const [isLoading, setLoading] = useState(true);
     try {
-        console.log(whereFrom);
+        
         useEffect(() => {
             getData(whereFrom, id, title, author, year, contentArr)
             .catch(function(error) {
@@ -46,7 +47,7 @@ const fetchContent = (id, status, title, author, year, contentArr) => {
         
             !isDone ? <ActivityIndicator /> :(
                 
-                renderFlatList(id, contentArr[0]["content"])
+                paginateData(contentArr[0]["content"])
             )
         
     )
@@ -103,20 +104,76 @@ const getData = async(whereFrom, id, title, author, year, contentArr) => {
     }
 }
 
-const renderFlatList = (id, data) => {
-    return (
+const paginateData = (data) => {
+    let words = data[0].match(/(.*?\s){200}/g);
+    //let words = data[0].split(" ", data[0].length);
+    let pages = [];
+    
+     for(let i = 0; i < words.length; i++) {
+        pages.push (
+            {
+               pageNumber: i,
+               pageContent: words[i] 
+            }
+        )
+     }
 
-        <FlatList
-        data = {data}
-        keyExtractor={({ id }) => id}
-        renderItem={({ item }) => (
-            
-            <Text style={styles.text}>{item}</Text>
-        )}
-        />
+     return (
+        renderFlatList(pages)
+     )
+}
+let flatlist = createRef();
+//(data, index) => { return { length: data.length, index, offset: (Dimensions.get('screen').width -5 ) * index } }
+
+const getItemLayout = (data, index) => {
+    const length = data.length;
+    const offset = data.slice(0,index).reduce((a, c) => a + c, 0)
+    return {length, offset, index}
+}
+
+const renderFlatList = (data) => {
+    let widthD = 0;
+    
+    return (
+        
+        <View onLayout={(event) => {
+            let {x, y, width, height} = event.nativeEvent.layout;
+            widthD = width;
+            console.log("YOCHHUUU", width);
+          }} >
+            <FlatList
+    
+                ref = {flatlist}
+                data = {data}
+                getItemLayout={(data, index) => { return { length: data.length, index, offset: data.length * index } }}
+                keyExtractor={({ id }) => id}
+                horizontal = {true}
+                pagingEnabled = {true}
+                showsHorizontalScrollIndicator = {false}
+                
+                initialScrollIndex = {140}
+                
+                renderItem={({ item }) => {
+                    return (
+                        <Item item={item} />
+                    )
+                }}
+            />
+        </View>
     )
 }
 
+const Item = (item) => {
+    //console.log("hey there", item);
+    //console.log("number", item.item.pageNumber);
+    return (
+        <View style={styles.page}>
+            
+            <Text style={styles.text}>{item.item.pageContent}</Text>
+            <Text style={styles.pageNumber}>{item.item.pageNumber}</Text>
+        </View>
+    )
+}
 
 const ReaderScreen = ({ route, navigation }) => {
 
@@ -138,21 +195,36 @@ const ReaderScreen = ({ route, navigation }) => {
     );
 }
 
+
+
+export default ReaderScreen;
+
 const styles = StyleSheet.create({
     container: {
-        padding: "5%",
-        flex: 1
+        
+        
     },
 
     content: {
-        flex: 1
+        
     },
 
     text: {
-        fontSize: 22,
-        padding: "5%"
+        fontSize: 17,
+        
+    },
+    page: {
+        width: Dimensions.get('screen').width - 10,
+        //height: Dimensions.get('screen').height - 10,
+        padding: 5
+        
+    },
+    pageNumber: {
+        //alignSelf: "flex-end",
+        alignSelf: "center",
+        
+        
     }
+    
 
 })
-
-export default ReaderScreen;
