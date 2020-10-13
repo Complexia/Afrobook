@@ -11,7 +11,7 @@ function setFetching(value) {
     isFetching = value;
 }
 
-const fetchContent = (id, status, title, author, year, contentArr) => {
+const fetchContent = (id, status, title, author, year, contentArr, pageNumber) => {
     
     if(contentArr.length == 0) {
         isDone = false;
@@ -47,7 +47,7 @@ const fetchContent = (id, status, title, author, year, contentArr) => {
         
             !isDone ? <ActivityIndicator /> :(
                 
-                paginateData(contentArr[0]["content"])
+                paginateData(contentArr[0]["content"], contentArr[0]["pageNumber"], id)
             )
         
     )
@@ -60,6 +60,8 @@ const getData = async(whereFrom, id, title, author, year, contentArr) => {
         try {
 
             let contentAsync = await AsyncStorage.getItem(id + "content");
+            let pageNumberAsync = await AsyncStorage.getItem(id + "pageNumber");
+            let pageNumber = JSON.parse(pageNumberAsync);
             let content = JSON.parse(contentAsync);
             cArr.push(content);
             contentArr.push(
@@ -68,7 +70,8 @@ const getData = async(whereFrom, id, title, author, year, contentArr) => {
                     title: title,
                     content: cArr,
                     author: author,
-                    year: year
+                    year: year,
+                    pageNumber: pageNumber
                 }
             );
             setFetching(false);
@@ -104,7 +107,7 @@ const getData = async(whereFrom, id, title, author, year, contentArr) => {
     }
 }
 
-const paginateData = (data) => {
+const paginateData = (data, pageNumber, id) => {
     let words = data[0].match(/(.*?\s){200}/g);
     //let words = data[0].split(" ", data[0].length);
     let pages = [];
@@ -119,7 +122,7 @@ const paginateData = (data) => {
      }
 
      return (
-        renderFlatList(pages)
+        renderFlatList(pages, pageNumber, id)
      )
 }
 let flatlist = createRef();
@@ -131,11 +134,15 @@ let flatlist = createRef();
 //     return {length, offset, index}
 // }
 
-const renderFlatList = (data) => {
+const renderFlatList = (data, pageNumber, id) => {
     let widthD = 0;
     let layoutWidth = 0;
     let layoutOffset = 0;
-
+    
+    async function getPageNum() {
+        let pageNum = await AsyncStorage.getItem(id + "pageNumber");
+        return pageNum;
+    }
     // const getItemLayout = (data, index) => {
         
     //     const length = layoutWidth;
@@ -153,6 +160,7 @@ const renderFlatList = (data) => {
         // Divide the horizontal offset by the width of the view to see which page is visible
         let pageNum = Math.floor(contentOffset.x / viewSize.width);
         console.log('scrolled to page ', pageNum);
+        savePageNumber(id, pageNum);
     }
     
     return (
@@ -163,7 +171,7 @@ const renderFlatList = (data) => {
             let viewSize = e.nativeEvent.layout;
             layoutWidth = viewSize.width;
             layoutOffset = viewSize.x;
-
+            
             getItemLayout = (data, index) => {
         
                 const length = layoutWidth;
@@ -192,9 +200,9 @@ const renderFlatList = (data) => {
                 horizontal = {true}
                 pagingEnabled = {true}
                 showsHorizontalScrollIndicator = {false}
-                initialNumToRender = {380}
+                initialNumToRender = {pageNumber + 1}
                 onMomentumScrollEnd={onScrollEnd}
-                initialScrollIndex = {40}
+                initialScrollIndex = {pageNumber}
 
 
 
@@ -214,8 +222,12 @@ const renderFlatList = (data) => {
     )
 }
 
-const printPageNumber = (pageNumber) => {
+const savePageNumber = async(id, pageNumber) => {
     console.log("hhsh", pageNumber)
+    console.log(id, pageNumber);
+    AsyncStorage.setItem(id + "pageNumber", JSON.stringify(pageNumber));
+    console.log("hhsh", "pageSaved");
+    console.log(await AsyncStorage.getItem(id + "pageNumber"));
     
 }
 const Item = (item) => {
@@ -238,12 +250,13 @@ const ReaderScreen = ({ route, navigation }) => {
     const { year } = route.params;
     const { status } = route.params;
     let { contentArr } = route.params;
+    const { pageNumber } = route.params;
 
     return (
         <SafeAreaView style={styles.container}>
             <Text style={styles.text}>The book text here. Actually?</Text>
             
-            {fetchContent(id, status, title, author, year, contentArr)}
+            {fetchContent(id, status, title, author, year, contentArr, pageNumber)}
             
 
         </SafeAreaView>

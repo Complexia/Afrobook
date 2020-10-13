@@ -16,7 +16,7 @@ const AppButton = ({ onPress, title }) => (
     </TouchableOpacity>
 );
 
-const fetchDesc = (navigation, id, status, title, author, year, descArr) => {
+const fetchDesc = (navigation, id, status, title, author, year, descArr, pageNumber) => {
     
     if(descArr.length == 0) {
         isDone = false;
@@ -52,14 +52,14 @@ const fetchDesc = (navigation, id, status, title, author, year, descArr) => {
         
             !isDone ? <ActivityIndicator /> :(
                 
-                renderDesc(navigation, id, title, author, year, descArr[0]["description"], status)
+                renderDesc(navigation, id, title, author, year, descArr[0]["description"], status, pageNumber)
             )
         
     )
 }
 
-const renderDesc = (navigation, id, title, author, year, description, status) => {
-    contentArr = [];
+const renderDesc = (navigation, id, title, author, year, description, status, pageNumber) => {
+    let contentArr = [];
     return (
         <SafeAreaView style={styles.container}>
 
@@ -76,12 +76,13 @@ const renderDesc = (navigation, id, title, author, year, description, status) =>
                         author: author,
                         year: year,
                         status: status,
+                        pageNumber: pageNumber,
                         contentArr: contentArr
                     })} />
                 )
                 :
                 (
-                    <AppButton title="Download" onPress={() => navigation.navigate('Reader', {
+                    <AppButton title="Download" onPress={() => navigation.navigate('Download', {
                         id: id,
                         title: title,
                         author: author,
@@ -152,13 +153,14 @@ const DescriptionScreen = ({ route, navigation }) => {
     const { author } = route.params;
     const { status } = route.params;
     let { descArr } = route.params;
+    const { pageNumber } = route.params;
 
-    console.log("From desc", title, id, year, author, status);
+    console.log("From desc", title, id, year, author, status, pageNumber);
     
     
     return (
 
-            fetchDesc(navigation, id, status, title, author, year, descArr)
+            fetchDesc(navigation, id, status, title, author, year, descArr, pageNumber)
         
     );
 }

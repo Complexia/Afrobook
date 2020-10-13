@@ -20,6 +20,7 @@ const downloadAll = (navigation) => {
 
     if(!isLoading && checker == 0) {
         checker = 1;
+        let initialPageNumber = 0;
         for(let i=0;i<data.length;i++) {
             //console.log(data[i]["_id"] + "title");
 
@@ -35,6 +36,7 @@ const downloadAll = (navigation) => {
             AsyncStorage.setItem(data[i]["_id"] + "editorsPick", JSON.stringify(data[i]["EditorsPicks_bool"]));
             AsyncStorage.setItem(data[i]["_id"] + "ratingCount", JSON.stringify(data[i]["Rating_Count"]));
             AsyncStorage.setItem(data[i]["_id"] + "content", JSON.stringify(data[i]["Text"]));
+            AsyncStorage.setItem(data[i]["_id"] + "pageNumber", JSON.stringify(initialPageNumber));
 
         }
         setGetting(false);

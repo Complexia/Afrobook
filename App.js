@@ -36,6 +36,7 @@ const HomeStackScreen = () => {
         <HomeStack.Navigator>
             <HomeStack.Screen name="Home" component={HomeScreen} options={{title: "Home"}} />
             <HomeStack.Screen name="Description" component={DescriptionStackScreen} options={{title: "Description"}} />
+            <HomeStack.Screen name="Download" component={DownloadScreen} options={{title: "Downloading"}} />
         </HomeStack.Navigator>
     )
 }

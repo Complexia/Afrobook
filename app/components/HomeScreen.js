@@ -118,6 +118,7 @@ const LibraryTag = () => {
 
 const Item = ({ item, style, navigation, downloaded, bookCount }) => {
     let descriptionArr = [];
+    console.log(item.pageNumber);
     return (
 
         <View>
@@ -130,7 +131,33 @@ const Item = ({ item, style, navigation, downloaded, bookCount }) => {
             )
             :
             (
-                <TouchableOpacity
+                downloaded === "Downloaded" ? (
+                    <TouchableOpacity
+                    onPress={() => navigation.navigate('Description',
+                    {
+                        screen: 'Description',
+                        params: {
+                            id: item.id,
+                            title: item.title,
+                            author: item.author,
+                            year: item.year,
+                            status: item.status,
+                            pageNumber: item.pageNumber,
+                            descArr: descriptionArr    
+                        }
+                    } 
+                    )}
+                    style={[styles.item, style]}>
+
+                        <Text style={styles.title}>{item.title}</Text>
+                        <Text style={styles.titleProps}>{item.author} {item.year}</Text>
+                        <Text style={styles.downloadedProp}>{downloaded}</Text>
+                    </TouchableOpacity> 
+
+                )
+                :
+                (
+                    <TouchableOpacity
                     onPress={() => navigation.navigate('Description',
                     {
                         screen: 'Description',
@@ -150,6 +177,8 @@ const Item = ({ item, style, navigation, downloaded, bookCount }) => {
                         <Text style={styles.titleProps}>{item.author} {item.year}</Text>
                         <Text style={styles.downloadedProp}>{downloaded}</Text>
                     </TouchableOpacity> 
+                )
+
             )
             }
         </View>
@@ -166,10 +195,10 @@ const getData = async(whereFrom) => {
         try {
             let newKeys = [];
             const keys = await AsyncStorage.getAllKeys();
-           
-            //every 12th value in the DB is id
+            
+            //every 13th value in the DB is id
             for(let i=0;i < keys.length-4;i++) {
-               if (i % 12 == 0) {
+               if (i % 13 == 0) {
                    newKeys.push(keys[i]);
                }
             }
@@ -180,16 +209,20 @@ const getData = async(whereFrom) => {
                 let titleAsync = await AsyncStorage.getItem(id + "title");
                 let authorAsync = await AsyncStorage.getItem(id + "authorName");
                 let yearAsync = await AsyncStorage.getItem(id + "year");
+                let pageNumberAsync = await AsyncStorage.getItem(id + "pageNumber");
                 let title = JSON.parse(titleAsync);
                 let author = JSON.parse(authorAsync);
                 let year = JSON.parse(yearAsync);
+                let pageNumber = JSON.parse(pageNumberAsync);
+                
                 storedBooksArr.push(
                     {
                         id: id,
                         title: title,
                         author: author,
                         year: year,
-                        status: "stored"
+                        status: "stored",
+                        pageNumber: pageNumber
                     }
                 )
             }
