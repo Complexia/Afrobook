@@ -125,37 +125,88 @@ const paginateData = (data) => {
 let flatlist = createRef();
 //(data, index) => { return { length: data.length, index, offset: (Dimensions.get('screen').width -5 ) * index } }
 
-const getItemLayout = (data, index) => {
-    const length = data.length;
-    const offset = data.slice(0,index).reduce((a, c) => a + c, 0)
-    return {length, offset, index}
-}
+// const getItemLayout = (data, index) => {
+//     const length = data.length;
+//     const offset = data.slice(0,index).reduce((a, c) => a + c, 0)
+//     return {length, offset, index}
+// }
 
 const renderFlatList = (data) => {
     let widthD = 0;
+    let layoutWidth = 0;
+    let layoutOffset = 0;
+
+    // const getItemLayout = (data, index) => {
+        
+    //     const length = layoutWidth;
+    //     const offset = layoutOffset;
+        
+    //     //console.log("i", index, "l", length, "o", offset);
+    //     return {length, offset, index}
+    // }
+    let getItemLayout;
+    function onScrollEnd(e) {
+        let contentOffset = e.nativeEvent.contentOffset;
+        let viewSize = e.nativeEvent.layoutMeasurement;
+        layoutWidth = viewSize.width;
+        layoutOffset = contentOffset.x;
+        // Divide the horizontal offset by the width of the view to see which page is visible
+        let pageNum = Math.floor(contentOffset.x / viewSize.width);
+        console.log('scrolled to page ', pageNum);
+    }
     
     return (
         
-        <View onLayout={(event) => {
-            let {x, y, width, height} = event.nativeEvent.layout;
-            widthD = width;
-            console.log("YOCHHUUU", width);
+        <View onLayout={(e) => {
+            console.log(e.nativeEvent);
+            //let contentOffset = e.nativeEvent.contentOffset;
+            let viewSize = e.nativeEvent.layout;
+            layoutWidth = viewSize.width;
+            layoutOffset = viewSize.x;
+
+            getItemLayout = (data, index) => {
+        
+                const length = layoutWidth;
+                const offset = layoutOffset;
+                
+                //console.log("i", index, "l", length, "o", offset);
+                return {length, offset, index}
+            }
+            
+            
+            //console.log("YOCHHUUU", width);
+            // if(flatlist.current) {
+            //     //flatlist.current.getItemLayout={ length: data.length, index, offset: (411.4285583496094 - 7.5) * index } 
+            //     console.log("Do here");
+            //     //flatlist.current.scrollToItem({item: data[45]});
+                
+            // }
           }} >
             <FlatList
     
                 ref = {flatlist}
                 data = {data}
-                getItemLayout={(data, index) => { return { length: data.length, index, offset: data.length * index } }}
+                getItemLayout = {getItemLayout}
+                //getItemLayout={(data, index) => { return { length: data.length, index, offset: (Dimensions.get('screen').width - 7.5) * index } }}
                 keyExtractor={({ id }) => id}
                 horizontal = {true}
                 pagingEnabled = {true}
                 showsHorizontalScrollIndicator = {false}
+                initialNumToRender = {380}
+                onMomentumScrollEnd={onScrollEnd}
+                initialScrollIndex = {40}
+
+
+
                 
-                initialScrollIndex = {140}
                 
                 renderItem={({ item }) => {
+                    
                     return (
+                        <View>
                         <Item item={item} />
+                        
+                        </View>
                     )
                 }}
             />
@@ -163,6 +214,10 @@ const renderFlatList = (data) => {
     )
 }
 
+const printPageNumber = (pageNumber) => {
+    console.log("hhsh", pageNumber)
+    
+}
 const Item = (item) => {
     //console.log("hey there", item);
     //console.log("number", item.item.pageNumber);
@@ -202,7 +257,7 @@ export default ReaderScreen;
 const styles = StyleSheet.create({
     container: {
         
-        
+        padding: 5
     },
 
     content: {
