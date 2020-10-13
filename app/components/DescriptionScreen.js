@@ -88,7 +88,8 @@ const renderDesc = (navigation, id, title, author, year, description, status, pa
                         author: author,
                         year: year,
                         status: status,
-                        contentArr: contentArr
+                        contentArr: contentArr,
+                        pageNumber: pageNumber
                     })} />
                 )
             }

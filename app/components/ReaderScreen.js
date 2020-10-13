@@ -1,5 +1,6 @@
 import React, { useEffect, useState, createRef }  from 'react';
-import { FlatList, Button, StyleSheet, View, Text, ActivityIndicator, SafeAreaView, AsyncStorage, Dimensions } from 'react-native';
+import { ScrollView, FlatList, Button, StyleSheet, View, Text, ActivityIndicator, SafeAreaView, AsyncStorage, Dimensions } from 'react-native';
+
 
 
 
@@ -106,10 +107,49 @@ const getData = async(whereFrom, id, title, author, year, contentArr) => {
   
     }
 }
+const testView = (words) => {
+    return (
+        <View onLayout={(e) => {
+            
+            //let contentOffset = e.nativeEvent.contentOffset;
+            let viewSize = e.nativeEvent.layout;
+            console.log("view", viewSize);
+            // let layoutWidth = viewSize.width;
+            // let layoutOffset = viewSize.x;
+            
+
+            
+
+          }} >
+            <Text>{words}</Text>
+        </View>
+    )
+}
+
+const constructPages = (data, wordsNumber) => {
+
+    const splitString = (str, splitLength) => {
+        let a = str.split(' '), b = [];
+        while(a.length) b.push(a.splice(0,splitLength).join(' '));
+        return b;
+    }
+    let words = splitString(data[0],wordsNumber);
+    //console.log(words);
+    //let words = data[0].match(/(.*?\s){50}/g);
+    
+    
+    
+    return words;
+}
+let wordNumber = 10;
 
 const paginateData = (data, pageNumber, id) => {
-    let words = data[0].match(/(.*?\s){200}/g);
+    let words = data[0].match(/(.*?\s){250}/g);
     //let words = data[0].split(" ", data[0].length);
+    console.log("called");
+    let dimensionsWidth = undefined;
+    let dimensionsHeight = 0;
+    let dimensionReady = true;
     let pages = [];
     
      for(let i = 0; i < words.length; i++) {
@@ -120,19 +160,52 @@ const paginateData = (data, pageNumber, id) => {
             }
         )
      }
-
+     let pageWords = constructPages(data, wordNumber);
      return (
-        renderFlatList(pages, pageNumber, id)
+        !dimensionReady ? (
+            
+            <View onLayout={(e) => {
+            
+                //pageWords = constructPages(data, 50);
+                let viewSize = e.nativeEvent.layout;
+                //console.log("view", viewSize);
+                dimensionsHeight = viewSize.height;
+                if (viewSize.height < Dimensions.get('screen').height) {
+                    console.log("less")
+                    wordNumber +=10;
+                    //console.log("Calling paginate...", e);
+                    
+                    //paginateData(data, pageNumber, id);
+                }
+                else{
+                    console.log("Successsss");
+                    dimensionReady = true;
+                }
+                
+
+            }}>
+                <Text
+                    onTextLayout={ (e) => {
+                        const { lines } = e.nativeEvent;
+                        console.log("lines", lines);
+                    } }
+                >
+                    {pageWords[0]}
+                </Text>
+            </View>
+            
+        )
+        :
+        (
+            renderFlatList(pages, pageNumber, id)
+        )
+        
+
+        
      )
 }
 let flatlist = createRef();
-//(data, index) => { return { length: data.length, index, offset: (Dimensions.get('screen').width -5 ) * index } }
 
-// const getItemLayout = (data, index) => {
-//     const length = data.length;
-//     const offset = data.slice(0,index).reduce((a, c) => a + c, 0)
-//     return {length, offset, index}
-// }
 
 const renderFlatList = (data, pageNumber, id) => {
     let widthD = 0;
@@ -159,14 +232,14 @@ const renderFlatList = (data, pageNumber, id) => {
         layoutOffset = contentOffset.x;
         // Divide the horizontal offset by the width of the view to see which page is visible
         let pageNum = Math.floor(contentOffset.x / viewSize.width);
-        console.log('scrolled to page ', pageNum);
+        //console.log('scrolled to page ', pageNum);
         savePageNumber(id, pageNum);
     }
     
     return (
         
         <View onLayout={(e) => {
-            console.log(e.nativeEvent);
+            
             //let contentOffset = e.nativeEvent.contentOffset;
             let viewSize = e.nativeEvent.layout;
             layoutWidth = viewSize.width;
@@ -181,14 +254,7 @@ const renderFlatList = (data, pageNumber, id) => {
                 return {length, offset, index}
             }
             
-            
-            //console.log("YOCHHUUU", width);
-            // if(flatlist.current) {
-            //     //flatlist.current.getItemLayout={ length: data.length, index, offset: (411.4285583496094 - 7.5) * index } 
-            //     console.log("Do here");
-            //     //flatlist.current.scrollToItem({item: data[45]});
-                
-            // }
+
           }} >
             <FlatList
     
@@ -203,16 +269,15 @@ const renderFlatList = (data, pageNumber, id) => {
                 initialNumToRender = {pageNumber + 1}
                 onMomentumScrollEnd={onScrollEnd}
                 initialScrollIndex = {pageNumber}
-
-
-
-                
                 
                 renderItem={({ item }) => {
                     
                     return (
                         <View>
-                        <Item item={item} />
+                            
+                            
+                            <Item item={item} />
+                            
                         
                         </View>
                     )
@@ -223,21 +288,22 @@ const renderFlatList = (data, pageNumber, id) => {
 }
 
 const savePageNumber = async(id, pageNumber) => {
-    console.log("hhsh", pageNumber)
-    console.log(id, pageNumber);
+
     AsyncStorage.setItem(id + "pageNumber", JSON.stringify(pageNumber));
-    console.log("hhsh", "pageSaved");
-    console.log(await AsyncStorage.getItem(id + "pageNumber"));
-    
+
+
 }
 const Item = (item) => {
-    //console.log("hey there", item);
-    //console.log("number", item.item.pageNumber);
+    
     return (
         <View style={styles.page}>
-            
-            <Text style={styles.text}>{item.item.pageContent}</Text>
-            <Text style={styles.pageNumber}>{item.item.pageNumber}</Text>
+            <ScrollView
+                snapToEnd = {false}
+            >
+
+                <Text style={styles.text}>{item.item.pageContent}</Text>
+                <Text style={styles.pageNumber}>{item.item.pageNumber}</Text>
+            </ScrollView>
         </View>
     )
 }
@@ -284,12 +350,14 @@ const styles = StyleSheet.create({
     page: {
         width: Dimensions.get('screen').width - 10,
         //height: Dimensions.get('screen').height - 10,
-        padding: 5
+        padding: 5,
+        marginBottom: 14
         
     },
     pageNumber: {
         //alignSelf: "flex-end",
         alignSelf: "center",
+        paddingBottom: 2
         
         
     }

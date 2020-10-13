@@ -26,17 +26,18 @@ import ReaderAsyncScreen from './app/components/ReaderAsyncScreen';
 import HamburgerNavigation from './app/components/HamburgerNavigation';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { createDrawerNavigator } from '@react-navigation/drawer';
+import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 
 
-const Tabs = createBottomTabNavigator();
+const Tabs = createMaterialBottomTabNavigator();
 const HomeStack = createStackNavigator();
 
 const HomeStackScreen = () => {
     return (
-        <HomeStack.Navigator>
+        <HomeStack.Navigator screenOptions = {{headerStyle:{backgroundColor: 'black'}}}>
             <HomeStack.Screen name="Home" component={HomeScreen} options={{title: "Home"}} />
             <HomeStack.Screen name="Description" component={DescriptionStackScreen} options={{title: "Description"}} />
-            <HomeStack.Screen name="Download" component={DownloadScreen} options={{title: "Downloading"}} />
+            
         </HomeStack.Navigator>
     )
 }
@@ -44,9 +45,10 @@ const HomeStackScreen = () => {
 
 const DescriptionStackScreen = () => {
     return (
-        <HomeStack.Navigator initialRouteName="Description">
+        <HomeStack.Navigator >
             <HomeStack.Screen name="Description" component={DescriptionScreen} options={{title: "Description"}} />
             <HomeStack.Screen name="Reader" component={ReaderScreen} options={{title: "Reader"}} />
+            <HomeStack.Screen name="Download" component={DownloadScreen} options={{title: "Downloading"}} />
         </HomeStack.Navigator>
     )
 }
@@ -65,15 +67,33 @@ const TitlesStackScreen = () => {
 const App = () => {
         return (  
             <NavigationContainer>
-                <Tabs.Navigator>
-                    <Tabs.Screen name="Home" component={HomeStackScreen} />
-                    <Tabs.Screen name="Library" component={LibraryScreen} />
+                <Tabs.Navigator
+                      initialRouteName="Home"
+                      activeColor="#f0edf6"
+                      inactiveColor="#3e2465"
+                      barStyle={{ backgroundColor: '#22236a', paddingBottom: 2 }}
+                >
+                    <Tabs.Screen style={styles.barIconStyle} name="Home" component={HomeStackScreen} />
+                    <Tabs.Screen name="About" component={HomeStackScreen} />
                 </Tabs.Navigator>
             </NavigationContainer>
         );
 };
 
+const styles = StyleSheet.create({
+    
+    barIconStyle: {
+        alignItems: "center",
+        justifyContent: "center",
+        
+    },
+    bottomTabsStyle: {
+        backgroundColor: "goldenrod",
+        
+        justifyContent: "center",
 
+    }
+})
 
 export default App;
 

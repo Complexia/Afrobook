@@ -116,6 +116,12 @@ const LibraryTag = () => {
     )
 }
 
+const AppButton = ({ onPress, title }) => (
+    <TouchableOpacity onPress={onPress} style={styles.appButtonContainer}>
+      <Text style={styles.appButtonText}>{title}</Text>
+    </TouchableOpacity>
+);
+
 const Item = ({ item, style, navigation, downloaded, bookCount }) => {
     let descriptionArr = [];
     console.log(item.pageNumber);
@@ -125,8 +131,11 @@ const Item = ({ item, style, navigation, downloaded, bookCount }) => {
             {downloaded === "" ? (
                 
                 <View style={styles.libraryTag}>
-                    <Text style={styles.title}>{item.title}</Text>
+                    <Text style={styles.libraryTagText}>{item.title}</Text>
                     <Text style={styles.titleProps}>{bookCount} books</Text>
+                    <AppButton title="Download All" onPress={() => navigation.navigate('Download', {                       
+                        pageNumber: 0
+                    })} />
                 </View>
             )
             :
@@ -167,6 +176,7 @@ const Item = ({ item, style, navigation, downloaded, bookCount }) => {
                             author: item.author,
                             year: item.year,
                             status: item.status,
+                            pageNumber: 0,
                             descArr: descriptionArr    
                         }
                     } 
@@ -403,7 +413,29 @@ const styles = StyleSheet.create({
     },
     libraryTag: {
         padding: 20
-    }
+    },
+    libraryTagText: {
+        fontSize: 45,
+        color: "#FFFFFF",
+        
+    },
+    appButtonContainer: {
+        elevation: 8,
+        backgroundColor: "#22236a",
+        borderRadius: 10,
+        paddingVertical: 10,
+        paddingHorizontal: 12,
+        marginTop: 10,
+        alignSelf: "flex-end"
+   
+    },
+    appButtonText: {
+        fontSize: 18,
+        color: "#fff",
+        fontWeight: "bold",
+        alignSelf: "center",
+        textTransform: "uppercase"
+    },
 
 
 })
