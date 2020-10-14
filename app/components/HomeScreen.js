@@ -18,6 +18,7 @@ function setFetching(value) {
 }
 const fetchBooks = (whereFrom, navigation) => {
    
+
     const [isLoading, setLoading] = useState(true);
     try {
 
@@ -133,6 +134,7 @@ const Item = ({ item, style, navigation, downloaded, bookCount }) => {
                 <View style={styles.libraryTag}>
                     <Text style={styles.libraryTagText}>{item.title}</Text>
                     <Text style={styles.titleProps}>{bookCount} books</Text>
+                    
                     <AppButton title="Download All" onPress={() => navigation.navigate('Download', {                       
                         pageNumber: 0
                     })} />
@@ -152,14 +154,17 @@ const Item = ({ item, style, navigation, downloaded, bookCount }) => {
                             year: item.year,
                             status: item.status,
                             pageNumber: item.pageNumber,
-                            descArr: descriptionArr    
+                            descArr: descriptionArr,
+                            authorOrigin: item.authorOrigin,
+                            genre: item.genre    
                         }
                     } 
                     )}
                     style={[styles.item, style]}>
 
                         <Text style={styles.title}>{item.title}</Text>
-                        <Text style={styles.titleProps}>{item.author} {item.year}</Text>
+                        <Text style={styles.titleProps}>{item.author}</Text>
+                        <Text style={styles.recommendedProp}>Recommended</Text>
                         <Text style={styles.downloadedProp}>{downloaded}</Text>
                     </TouchableOpacity> 
 
@@ -177,7 +182,9 @@ const Item = ({ item, style, navigation, downloaded, bookCount }) => {
                             year: item.year,
                             status: item.status,
                             pageNumber: 0,
-                            descArr: descriptionArr    
+                            descArr: descriptionArr,
+                            authorOrigin: item.authorOrigin,
+                            genre: item.genre      
                         }
                     } 
                     )}
@@ -220,10 +227,16 @@ const getData = async(whereFrom) => {
                 let authorAsync = await AsyncStorage.getItem(id + "authorName");
                 let yearAsync = await AsyncStorage.getItem(id + "year");
                 let pageNumberAsync = await AsyncStorage.getItem(id + "pageNumber");
+                let authorOriginAsync = await AsyncStorage.getItem(id + "authorOrigin");
+                let genreAsync = await AsyncStorage.getItem(id + "category");
+                let editorsPickAsync = await AsyncStorage.getItem(id + "editorsPick");
                 let title = JSON.parse(titleAsync);
                 let author = JSON.parse(authorAsync);
                 let year = JSON.parse(yearAsync);
                 let pageNumber = JSON.parse(pageNumberAsync);
+                let authorOrigin = JSON.parse(authorOriginAsync);
+                let genre = JSON.parse(genreAsync);
+                let editorsPick = JSON.parse(editorsPickAsync);
                 
                 storedBooksArr.push(
                     {
@@ -232,7 +245,10 @@ const getData = async(whereFrom) => {
                         author: author,
                         year: year,
                         status: "stored",
-                        pageNumber: pageNumber
+                        pageNumber: pageNumber,
+                        authorOrigin: authorOrigin,
+                        genre: genre,
+                        editorsPick: editorsPick
                     }
                 )
             }
@@ -326,6 +342,7 @@ const returnScreen = (navigation) => {
     return (
           
      <SafeAreaView style={styles.background}>
+         
          {fetchBooks("fetched", navigation)}
      </SafeAreaView>
     );
@@ -374,13 +391,45 @@ const handleFirstConnectivityChange = isConnected => {
     }
 };
 
-const HomeScreen = ({ navigation }) => {
+const useForceUpdate = () => {
+    console.log("called refresh");
+    const [value, setValue] = useState(0); // integer state
+    return () => setValue(value => ++value); // update the state to force render
+}
 
+const HomeScreen = ({ navigation }) => {
+    //const forceUpdate = useForceUpdate();
+
+    useEffect(() => {
+        const unsubscribe = navigation.addListener('focus', () => {
+          // The screen is focused
+          // Call any action
+          //const forceUpdate = useForceUpdate();
+          console.log("focused")
+          
+        });
+    
+        // Return the function to unsubscribe from the event so it gets removed on unmount
+        return unsubscribe;
+    }, [navigation]);
     return (
+        
          returnScreen(navigation)
         
     );
 }
+
+// class HomeScreen extends React.Component {
+//     static navigationOptions = {
+//         title: 'Description',
+//     };
+//     render() {
+//         const { navigation } = this.props.navigation;
+//         return (
+//             returnScreen(navigation)
+//         )
+//     }
+// }
 
 const styles = StyleSheet.create({
     
@@ -410,6 +459,10 @@ const styles = StyleSheet.create({
         color: "#C0C0C0",
         alignSelf: "flex-end"
 
+    },
+    recommendedProp: {
+        color: "#f3f70c",
+        alignSelf: "flex-end"
     },
     libraryTag: {
         padding: 20

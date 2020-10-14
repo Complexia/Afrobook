@@ -47,7 +47,16 @@ const downloadAll = (navigation, pageNumber) => {
         <SafeAreaView style={styles.container}>
             <View>
                 
-                {isLoading || isGetting ? <ActivityIndicator /> : (
+                {isLoading || isGetting ? (
+                    
+                    <View>
+
+                        <ActivityIndicator /> 
+                        <Text>Downloading in progress</Text>
+                    </View>
+                    )
+                    : 
+                    (
                     <View style={styles.container}>
                         <Text>Done downloading</Text>
                         <AppButton title="View Library" onPress={() => navigation.navigate('Home')} />

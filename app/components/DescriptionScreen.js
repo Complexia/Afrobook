@@ -16,7 +16,7 @@ const AppButton = ({ onPress, title }) => (
     </TouchableOpacity>
 );
 
-const fetchDesc = (navigation, id, status, title, author, year, descArr, pageNumber) => {
+const fetchDesc = (navigation, id, status, title, author, year, descArr, pageNumber, authorOrigin, genre) => {
     
     if(descArr.length == 0) {
         isDone = false;
@@ -52,19 +52,20 @@ const fetchDesc = (navigation, id, status, title, author, year, descArr, pageNum
         
             !isDone ? <ActivityIndicator /> :(
                 
-                renderDesc(navigation, id, title, author, year, descArr[0]["description"], status, pageNumber)
+                renderDesc(navigation, id, title, author, year, descArr[0]["description"], status, pageNumber, authorOrigin, genre)
             )
         
     )
 }
 
-const renderDesc = (navigation, id, title, author, year, description, status, pageNumber) => {
+const renderDesc = (navigation, id, title, author, year, description, status, pageNumber, authorOrigin, genre) => {
     let contentArr = [];
     return (
         <SafeAreaView style={styles.container}>
 
             <Text style={styles.titleText}>{title}</Text>
-            <Text style={styles.authorText}>by {author}, {year}</Text>
+            <Text style={styles.authorText}>by {author}, {year}, {authorOrigin}</Text>
+            <Text style={styles.authorText}>{genre}</Text>
             <View style={styles.borderLine}></View>
             <Text style={styles.descriptionText}>{description}</Text>
 
@@ -77,7 +78,9 @@ const renderDesc = (navigation, id, title, author, year, description, status, pa
                         year: year,
                         status: status,
                         pageNumber: pageNumber,
-                        contentArr: contentArr
+                        contentArr: contentArr,
+                        authorOrigin: authorOrigin,
+                        genre: genre
                     })} />
                 )
                 :
@@ -155,13 +158,15 @@ const DescriptionScreen = ({ route, navigation }) => {
     const { status } = route.params;
     let { descArr } = route.params;
     const { pageNumber } = route.params;
+    const { authorOrigin } = route.params;
+    const { genre } = route.params;
 
-    console.log("From desc", title, id, year, author, status, pageNumber);
+    //console.log("From desc", title, id, year, author, status, pageNumber);
     
     
     return (
 
-            fetchDesc(navigation, id, status, title, author, year, descArr, pageNumber)
+            fetchDesc(navigation, id, status, title, author, year, descArr, pageNumber, authorOrigin, genre)
         
     );
 }

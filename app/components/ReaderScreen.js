@@ -1,5 +1,5 @@
 import React, { useEffect, useState, createRef }  from 'react';
-import { ScrollView, FlatList, Button, StyleSheet, View, Text, ActivityIndicator, SafeAreaView, AsyncStorage, Dimensions } from 'react-native';
+import { Image, ScrollView, FlatList, Button, StyleSheet, View, Text, ActivityIndicator, SafeAreaView, AsyncStorage, Dimensions } from 'react-native';
 
 
 
@@ -12,7 +12,7 @@ function setFetching(value) {
     isFetching = value;
 }
 
-const fetchContent = (id, status, title, author, year, contentArr, pageNumber) => {
+const fetchContent = (id, status, title, author, year, contentArr, pageNumber, authorOrigin, genre) => {
     
     if(contentArr.length == 0) {
         isDone = false;
@@ -48,7 +48,7 @@ const fetchContent = (id, status, title, author, year, contentArr, pageNumber) =
         
             !isDone ? <ActivityIndicator /> :(
                 
-                paginateData(contentArr[0]["content"], contentArr[0]["pageNumber"], id)
+                paginateData(contentArr[0]["content"], contentArr[0]["pageNumber"], id, author, year, title, authorOrigin, genre)
             )
         
     )
@@ -143,19 +143,26 @@ const constructPages = (data, wordsNumber) => {
 }
 let wordNumber = 10;
 
-const paginateData = (data, pageNumber, id) => {
+const paginateData = (data, pageNumber, id, author, year, title, authorOrigin, genre) => {
     let words = data[0].match(/(.*?\s){250}/g);
     //let words = data[0].split(" ", data[0].length);
-    console.log("called");
+    
     let dimensionsWidth = undefined;
     let dimensionsHeight = 0;
     let dimensionReady = true;
-    let pages = [];
     
+    let pages = [];
+    let intro = [author, authorOrigin, year, genre, title];
+    pages.push (
+        {
+            pageNumber: "x",
+            pageContent: intro
+        }
+    )
      for(let i = 0; i < words.length; i++) {
         pages.push (
             {
-               pageNumber: i,
+               pageNumber: i + 1,
                pageContent: words[i] 
             }
         )
@@ -238,7 +245,7 @@ const renderFlatList = (data, pageNumber, id) => {
     
     return (
         
-        <View onLayout={(e) => {
+        <View style={styles.flatlistView} onLayout={(e) => {
             
             //let contentOffset = e.nativeEvent.contentOffset;
             let viewSize = e.nativeEvent.layout;
@@ -297,13 +304,30 @@ const Item = (item) => {
     
     return (
         <View style={styles.page}>
-            <ScrollView
+            {item.item.pageNumber === "x" ? (
+                
+                <View style={styles.pageIntro}>
+                    <Image style={styles.logo} source={require("../assets/AfroStory_Stacked_Purple_R.jpg")} />
+                    <Text style={styles.pageIntroTextTitle}>{item.item.pageContent[4]}</Text>
+                    <Text style={styles.pageIntroTextAuthor}>{item.item.pageContent[0]}</Text>
+                    <Text style={styles.pageIntroTextOrigin}>{item.item.pageContent[1]}</Text>
+                    <Text style={styles.pageIntroTextYear}>{item.item.pageContent[2]}</Text>
+                    <Text style={styles.pageIntroTextGenre}>{item.item.pageContent[3]}</Text>
+                    
+                </View>
+            )
+            :
+            (
+                <ScrollView
                 snapToEnd = {false}
             >
 
                 <Text style={styles.text}>{item.item.pageContent}</Text>
                 <Text style={styles.pageNumber}>{item.item.pageNumber}</Text>
+
             </ScrollView>
+            )}
+            
         </View>
     )
 }
@@ -317,12 +341,14 @@ const ReaderScreen = ({ route, navigation }) => {
     const { status } = route.params;
     let { contentArr } = route.params;
     const { pageNumber } = route.params;
+    const { authorOrigin } = route.params;
+    const { genre } = route.params;
 
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.text}>The book text here. Actually?</Text>
             
-            {fetchContent(id, status, title, author, year, contentArr, pageNumber)}
+            
+            {fetchContent(id, status, title, author, year, contentArr, pageNumber, authorOrigin, genre)}
             
 
         </SafeAreaView>
@@ -335,11 +361,12 @@ export default ReaderScreen;
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
+        padding: 5,
         
-        padding: 5
     },
 
-    content: {
+    flatlistView: {
         
     },
 
@@ -348,10 +375,13 @@ const styles = StyleSheet.create({
         
     },
     page: {
+        
         width: Dimensions.get('screen').width - 10,
         //height: Dimensions.get('screen').height - 10,
+        
         padding: 5,
-        marginBottom: 14
+        marginBottom: 14,
+        
         
     },
     pageNumber: {
@@ -360,6 +390,43 @@ const styles = StyleSheet.create({
         paddingBottom: 2
         
         
+    },
+
+    pageIntro: {
+        
+        alignItems: "center",
+        justifyContent: "center",
+        alignSelf: "stretch"
+        
+    },
+    pageIntroTextTitle: {
+        fontSize: 27,
+        fontWeight: "bold",
+        alignSelf: "center"
+
+    },
+    pageIntroTextAuthor: {
+        fontSize: 27,
+        
+    },
+    pageIntroTextOrigin: {
+        fontSize: 27,
+        
+    },
+    pageIntroTextYear: {
+        fontSize: 27,
+        fontStyle: "italic"
+        
+    },
+
+    pageIntroTextGenre: {
+        fontSize: 27,
+        
+        
+    },
+    logo: {
+        width: 300,
+        height: 300
     }
     
 
