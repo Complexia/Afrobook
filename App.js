@@ -6,18 +6,19 @@ import { StyleSheet } from 'react-native';
 import WelcomeScreen from './app/components/WelcomeScreen';
 import { createStackNavigator } from '@react-navigation/stack';
 import HomeScreen from './app/components/HomeScreen';
-import TitlesScreen from './app/components/TitlesScreen';
+
 
 import ReaderScreen from './app/components/ReaderScreen';
 
 import DescriptionScreen from './app/components/DescriptionScreen';
 
 import DownloadScreen from './app/components/DownloadScreen';
-import { useIsFocused } from '@react-navigation/native';
+
 
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
 import AboutScreen from './app/components/AboutScreen';
+import TempHomeScreen from './app/components/TempHomeScreen';
 
 const Tabs = createMaterialBottomTabNavigator();
 const HomeStack = createStackNavigator();
@@ -55,6 +56,15 @@ const AboutStackScreen = () => {
         
     )
 }
+const TempHomeStackScreen = () => {
+    return (
+        <HomeStack.Navigator headerMode = "screen" screenOptions = {{headerTintColor: '#f0edf6', headerTitleAlign: "center", headerStyle:{backgroundColor: '#22236a'}}}>
+            <HomeStack.Screen name="TempHome" component={TempHomeScreen} options={{title: "About"}} />
+            <HomeStack.Screen name="Home" component={HomeStackScreen} options={{title: "AfroStory"}} />
+        </HomeStack.Navigator>
+        
+    )
+}
 
 const DownloadStackScreen = () => {
     return (
@@ -80,7 +90,7 @@ const HomeTabScreen = () => {
                 barStyle={{ backgroundColor: '#22236a', paddingBottom: 2 }}
                 
             >
-                <Tabs.Screen name="Home" component={HomeStackScreen} options = {{
+                <Tabs.Screen name="Home" component={TempHomeStackScreen} options = {{
                     tabBarLabel: 'Home',
                     
                     tabBarIcon: ({ color }) => (

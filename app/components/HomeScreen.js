@@ -1,31 +1,21 @@
 import React, { useEffect, useState } from 'react';
-import { useIsFocused } from '@react-navigation/native';
-import { ScrollView, RefreshControl, SafeAreaView, Image, ImageBackground, View, Alert, Text, StyleSheet, TouchableOpacity, ActivityIndicator, FlatList, AsyncStorage, Platform } from 'react-native';
+import { RefreshControl, SafeAreaView, View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, FlatList, AsyncStorage, Platform } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
-import Constants from 'expo-constants';
 
 
-//let storedBooksArr = [];
-let interFetchedBooksArr = [];
-//let fetchedBooksArr = [];
-//let booksArr = [];
-let isFetching = true;
-let checker = 0;
+
+
+
+
+
+
 let isDone = false;
-let isGetting = true;
 let connectivityReturnValue = true;
 let clearKeys = [];
 
-function setFetching(value) {
-    isFetching = value;
-}
+
 const fetchBooks = (whereFrom, navigation) => {
    
-    const isFocused = useIsFocused();
-
-    
-
-    
     const [isLoading, setLoading] = useState(true);
     const [data, setData] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
@@ -58,73 +48,16 @@ const fetchBooks = (whereFrom, navigation) => {
         isDone = true;
     }
 
-    if(!isFetching && !isGetting &&  checker == 0) {
-        // if(interFetchedBooksArr != null) {
-        //     //console.log("yui",interFetchedBooksArr);
-        //     //fetchedBooksArr = interFetchedBooksArr;
-        //     // for(let interBook of interFetchedBooksArr) {
-                
-        //     //     fetchedBooksArr.push(
-        //     //         {   
-        //     //             id: interBook._id,
-        //     //             title: interBook.Title,
-        //     //             author: interBook.Auth_Name,
-        //     //             year: interBook.Year,
-        //     //             status: "fetched"
-        //     //         }
-                    
-        //     //     )
-                
-        //     // }
-        // }
-        
-        checker = 1;
-        // booksArr.push (
-        //     {   
-        //         id: "libraryTag",
-        //         title: "Library",
-        //         status: "tag"
-        //     }
-        // )
-        
-        // for(let storedBook of storedBooksArr) {
-        //     booksArr.push(storedBook);
-        // }
-        // if(fetchedBooksArr.length > 0) {
-        //     for(let fetchedBook of fetchedBooksArr) {
-                
-        //         let indicator = 0;
-        //         let tempBook = fetchedBook;
-                
-                
-        //         for(let storedBook of storedBooksArr) {
-
-        //             if(fetchedBook.id == storedBook.id) {
-        //                 indicator = 1;
-        //                 break;
-        //             }
- 
-        //         }
-                
-        //         if(indicator == 0) {
-        //             booksArr.push(tempBook)
-        //         }
-        //     }
-        // }
-        
-        //isDone = true;
-    }
+    
 
     return (
         <SafeAreaView>
             {!isDone ? <ActivityIndicator style={styles.activityIndicator}/> : (
                 
-                    
-                //renderFlatList(data, navigation)
-                
+    
                 <FlatList
                     data={data}
-                    keyExtractor={({ id }) => id + refreshing}
+                    keyExtractor={({ id }) => id}
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
@@ -340,7 +273,7 @@ const getData = async(whereFrom) => {
                 )
             }
             
-            isGetting = false;
+            
         }
         catch(error) {
             alert(error);
@@ -432,55 +365,7 @@ const getData = async(whereFrom) => {
     return booksArr;
 }
 
-const renderFlatList = (data, navigation) => {
 
-    
-    
-    
-    
-    return (
-        <SafeAreaView>
-            <FlatList
-                data={data}
-                keyExtractor={({ id }) => id}
-                // refreshControl={
-                //     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-                // }
-                extraData={data}
-                renderItem={({ item }) => {
-
-                    let backgroundColor = "black";
-                    if(item.status == "stored") {
-                        backgroundColor = "#22236a";
-                    }
-                    else if(item.status == "fetched") {
-                        backgroundColor = "#434447"
-                    }
-
-                    let downloaded = "";
-                    if(item.status == "stored") {
-                        downloaded = "Downloaded";
-                    }
-                    else if(item.status == "fetched") {
-                        downloaded = "Not downloaded"
-                    }
-                    
-                    return (
-                        <Item
-                            item={item}
-                            
-                            style={{ backgroundColor }}
-                            navigation={ navigation }
-                            downloaded = {downloaded}
-                            bookCount = {data.length -1}
-                        />
-                    )
-                }}
-            />
-
-        </SafeAreaView>
-    );
-}
 
 const returnScreen = (navigation) => {
     
@@ -536,11 +421,6 @@ const handleFirstConnectivityChange = isConnected => {
     }
 };
 
-const useForceUpdate = () => {
-    
-    const [value, setValue] = useState(0); // integer state
-    return () => setValue(value => ++value); // update the state to force render
-}
 
 const wait = (timeout) => {
     return new Promise(resolve => {
@@ -549,32 +429,7 @@ const wait = (timeout) => {
 }
 
 const HomeScreen = ({ navigation }) => {
-    //const forceUpdate = useForceUpdate();
     
-    // useEffect(() => {
-    //     const unsubscribe = navigation.addListener('focus', () => {
-    //       // The screen is focused         
-    //       //console.log("Focused");
-    //       //Update value to force rerender
-    //     //   let some = value;
-    //     //   setValue(value + some);
-            
-    //         setLedger(false);
-    //         //useForceUpdate();
-          
-    //     //   else {
-    //     //       setLedger(true);
-    //     //   }
-    //       console.log("Focused", ledger);
-          
-    //     });
-    
-    //     // Return the function to unsubscribe from the event so it gets removed on unmount
-    //     return unsubscribe;
-    // }, [navigation]);
-
-
-
     return (
             
          
@@ -587,17 +442,7 @@ const HomeScreen = ({ navigation }) => {
     );
 }
 
-// class HomeScreen extends React.Component {
-//     static navigationOptions = {
-//         title: 'Description',
-//     };
-//     render() {
-//         const { navigation } = this.props.navigation;
-//         return (
-//             returnScreen(navigation)
-//         )
-//     }
-// }
+
 
 const styles = StyleSheet.create({
     

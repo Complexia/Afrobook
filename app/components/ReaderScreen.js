@@ -13,7 +13,7 @@ function setFetching(value) {
 }
 
 const fetchContent = (id, status, title, author, year, contentArr, pageNumber, authorOrigin, genre) => {
-    //console.log("AA", contentArr);
+    
     console.log("From desc", id, status, title, author, year, contentArr, pageNumber, authorOrigin, genre)
     if(contentArr.length == 0) {
         isDone = false;
@@ -113,24 +113,7 @@ const getData = async(whereFrom, id, title, author, year, contentArr) => {
   
     }
 }
-const testView = (words) => {
-    return (
-        <View onLayout={(e) => {
-            
-            //let contentOffset = e.nativeEvent.contentOffset;
-            let viewSize = e.nativeEvent.layout;
-            
-            // let layoutWidth = viewSize.width;
-            // let layoutOffset = viewSize.x;
-            
 
-            
-
-          }} >
-            <Text>{words}</Text>
-        </View>
-    )
-}
 
 const constructPages = (data, wordsNumber) => {
 
@@ -141,10 +124,7 @@ const constructPages = (data, wordsNumber) => {
     }
     let words = splitString(data[0],wordsNumber);
     
-    //let words = data[0].match(/(.*?\s){50}/g);
-    
-    
-    
+
     return words;
 }
 let wordNumber = 10;
@@ -188,7 +168,7 @@ const paginateData = (data, pageNumber, id, author, year, title, authorOrigin, g
                     wordNumber +=10;
                     
                     
-                    //paginateData(data, pageNumber, id);
+                    
                 }
                 else{
                     
