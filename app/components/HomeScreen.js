@@ -4,15 +4,16 @@ import NetInfo from "@react-native-community/netinfo";
 import Constants from 'expo-constants';
 
 
-let storedBooksArr = [];
+//let storedBooksArr = [];
 let interFetchedBooksArr = [];
-let fetchedBooksArr = [];
-let booksArr = [];
+//let fetchedBooksArr = [];
+//let booksArr = [];
 let isFetching = true;
 let checker = 0;
 let isDone = false;
 let isGetting = true;
 let connectivityReturnValue = true;
+let clearKeys = [];
 
 function setFetching(value) {
     isFetching = value;
@@ -21,12 +22,23 @@ const fetchBooks = (whereFrom, navigation) => {
    
 
     const [isLoading, setLoading] = useState(true);
+    const [data, setData] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
+
+    const onRefresh = React.useCallback(() => {
+        setRefreshing(true);
+        navigation.navigate("HomeStack");
+        wait(2000).then(() => setRefreshing(false));
+    }, []);
+    console.log("refrreshing", refreshing);
     try {
 
         useEffect(() => {
             getData(whereFrom)
+            .then((res) => setData(res))
+            
             .catch(function(error) {
-                console.log("caught this");
+                console.log(error);
                 
             })
             .finally(() => setLoading(false));
@@ -36,63 +48,64 @@ const fetchBooks = (whereFrom, navigation) => {
         console.log("caught this here");
     }
     if(!isLoading) {
-        setLoading(true);
+        isDone = true;
     }
 
     if(!isFetching && !isGetting &&  checker == 0) {
-        if(interFetchedBooksArr[0] != null) {
-            
-            for(let interBook of interFetchedBooksArr[0]) {
+        // if(interFetchedBooksArr != null) {
+        //     //console.log("yui",interFetchedBooksArr);
+        //     //fetchedBooksArr = interFetchedBooksArr;
+        //     // for(let interBook of interFetchedBooksArr) {
                 
-                fetchedBooksArr.push(
-                    {   
-                        id: interBook._id,
-                        title: interBook.Title,
-                        author: interBook.Auth_Name,
-                        year: interBook.Year,
-                        status: "fetched"
-                    }
+        //     //     fetchedBooksArr.push(
+        //     //         {   
+        //     //             id: interBook._id,
+        //     //             title: interBook.Title,
+        //     //             author: interBook.Auth_Name,
+        //     //             year: interBook.Year,
+        //     //             status: "fetched"
+        //     //         }
                     
-                )
+        //     //     )
                 
-            }
-        }
+        //     // }
+        // }
         
         checker = 1;
-        booksArr.push (
-            {   
-                id: "libraryTag",
-                title: "Library",
-                status: "tag"
-            }
-        )
+        // booksArr.push (
+        //     {   
+        //         id: "libraryTag",
+        //         title: "Library",
+        //         status: "tag"
+        //     }
+        // )
         
-        for(let storedBook of storedBooksArr) {
-            booksArr.push(storedBook);
-        }
-        if(fetchedBooksArr.length > 0) {
-            for(let fetchedBook of fetchedBooksArr) {
+        // for(let storedBook of storedBooksArr) {
+        //     booksArr.push(storedBook);
+        // }
+        // if(fetchedBooksArr.length > 0) {
+        //     for(let fetchedBook of fetchedBooksArr) {
                 
-                let indicator = 0;
-                let tempBook = fetchedBook;
+        //         let indicator = 0;
+        //         let tempBook = fetchedBook;
                 
                 
-                for(let storedBook of storedBooksArr) {
+        //         for(let storedBook of storedBooksArr) {
 
-                    if(fetchedBook.id == storedBook.id) {
-                        indicator = 1;
-                        break;
-                    }
+        //             if(fetchedBook.id == storedBook.id) {
+        //                 indicator = 1;
+        //                 break;
+        //             }
  
-                }
+        //         }
                 
-                if(indicator == 0) {
-                    booksArr.push(tempBook)
-                }
-            }
-        }
+        //         if(indicator == 0) {
+        //             booksArr.push(tempBook)
+        //         }
+        //     }
+        // }
         
-        isDone = true;
+        //isDone = true;
     }
 
     return (
@@ -100,7 +113,47 @@ const fetchBooks = (whereFrom, navigation) => {
             {!isDone ? <ActivityIndicator style={styles.activityIndicator}/> : (
                 
                     
-                renderFlatList(booksArr, navigation)
+                //renderFlatList(data, navigation)
+                
+                <FlatList
+                    data={data}
+                    keyExtractor={({ id }) => id + refreshing}
+                    refreshControl={
+                        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                    }
+                    extraData={refreshing}
+                    renderItem={({ item }) => {
+    
+                        let backgroundColor = "black";
+                        if(item.status == "stored") {
+                            backgroundColor = "#22236a";
+                        }
+                        else if(item.status == "fetched") {
+                            backgroundColor = "#434447"
+                        }
+    
+                        let downloaded = "";
+                        if(item.status == "stored") {
+                            downloaded = "Downloaded";
+                        }
+                        else if(item.status == "fetched") {
+                            downloaded = "Not downloaded"
+                        }
+                        
+                        return (
+                            <Item
+                                item={item}
+                                
+                                style={{ backgroundColor }}
+                                navigation={ navigation }
+                                downloaded = {downloaded}
+                                bookCount = {data.length -1}
+                            />
+                        )
+                    }}
+                />
+    
+            
                 
             )}
         </SafeAreaView>
@@ -124,14 +177,14 @@ const AppButton = ({ onPress, title }) => (
     </TouchableOpacity>
 );
 
-const Item = ({ item, style, navigation, downloaded, bookCount }) => {
+const Item = ({ item, style, navigation, downloaded, bookCount}) => {
     let descriptionArr = [];
     let recommended = "";
     if(item.editorsPick) {
         recommended = "Recommended";
     }
     
-    
+    const onPressClear = () => AsyncStorage.multiRemove(clearKeys);
     return (
 
         <View>
@@ -141,9 +194,15 @@ const Item = ({ item, style, navigation, downloaded, bookCount }) => {
                     <Text style={styles.libraryTagText}>{item.title}</Text>
                     <Text style={styles.titleProps}>{bookCount} books</Text>
                     
-                    <AppButton title="Download All" onPress={() => navigation.navigate('Download', {                       
-                        pageNumber: 0
+                    <AppButton title="Download All" onPress={() => navigation.navigate('Download', {
+                        screen: 'Download',
+                        params: {
+
+                            pageNumber: 0
+                        }                       
                     })} />
+                    <AppButton title="Clear Async" onPress={onPressClear} />
+
                 </View>
             )
             :
@@ -215,13 +274,15 @@ const Item = ({ item, style, navigation, downloaded, bookCount }) => {
 
 
 const getData = async(whereFrom) => {
-
+    let storedBooksArr = [];
+    let fetchedBooksArr = [];
+    let booksArr = [];
     if(whereFrom == "async") {
         
         try {
             let newKeys = [];
             const keys = await AsyncStorage.getAllKeys();
-            //AsyncStorage.multiRemove(keys);
+            clearKeys = keys;
             //every 13th value in the DB is id
             for(let i=0;i < keys.length-4;i++) {
                if (i % 13 == 0) {
@@ -267,8 +328,9 @@ const getData = async(whereFrom) => {
         catch(error) {
             alert(error);
         }
+        
     }
-    else {
+    if(whereFrom == "async") {
         
         await checkConnectivity()
         .then(async function(result) { 
@@ -278,7 +340,20 @@ const getData = async(whereFrom) => {
                     const uri = "http://afrostoryapibooks-env.eba-dm7hpfam.us-east-2.elasticbeanstalk.com/books/titles";
                     await fetch(uri)
                     .then((response) => response.json())
-                    .then((json) => interFetchedBooksArr.push(json))         
+                    .then((json) => {
+                        for(let book of json) {
+                            
+                            fetchedBooksArr.push(
+                                {
+                                    id: book._id,
+                                    title: book.Title,
+                                    author: book.Auth_Name,
+                                    year: book.Year,
+                                    status: "fetched"
+                                }
+                            )
+                        }
+                    })         
                     .catch(function(error) {
                         console.log("You are offline");
                         
@@ -301,19 +376,48 @@ const getData = async(whereFrom) => {
         .catch(err => {
             console.log("Error")
         })
-   
+        
     }
+    booksArr.push (
+        {   
+            id: "libraryTag",
+            title: "Library",
+            status: "tag"
+        }
+    )
+
+    for(let storedBook of storedBooksArr) {
+        booksArr.push(storedBook);
+    }
+    if(fetchedBooksArr.length > 0) {
+        for(let fetchedBook of fetchedBooksArr) {
+            
+            let indicator = 0;
+            let tempBook = fetchedBook;
+            
+            
+            for(let storedBook of storedBooksArr) {
+
+                if(fetchedBook.id == storedBook.id) {
+                    indicator = 1;
+                    break;
+                }
+
+            }
+            
+            if(indicator == 0) {
+                booksArr.push(tempBook)
+            }
+        }
+    }
+    return booksArr;
 }
 
 const renderFlatList = (data, navigation) => {
 
     
-
-    // const onRefresh = React.useCallback(() => {
-    //   setRefreshing(true);
-  
-    //   wait(2000).then(() => setRefreshing(false));
-    // }, []);// 
+    
+    
     
     return (
         <SafeAreaView>
@@ -360,12 +464,12 @@ const renderFlatList = (data, navigation) => {
 }
 
 const returnScreen = (navigation) => {
-    fetchBooks("async", navigation) 
+    
     return (
           
      <SafeAreaView style={styles.background}>
          
-         {fetchBooks("fetched", navigation)}
+         {fetchBooks("async", navigation)}
      </SafeAreaView>
     );
 }
@@ -455,7 +559,10 @@ const HomeScreen = ({ navigation }) => {
     return (
             
          
-                returnScreen(navigation)
+        <SafeAreaView style={styles.background}>
+         
+            {fetchBooks("async", navigation)}
+        </SafeAreaView>
             
            
     );

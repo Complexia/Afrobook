@@ -74,7 +74,7 @@ const downloadAll = (navigation, pageNumber) => {
                     (
                     <View style={styles.container}>
                         <Text>Done downloading</Text>
-                        <AppButton title="View Library" onPress={() => navigation.navigate('Home')} />
+                        <AppButton title="Library" onPress={() => navigation.navigate('Home')} />
                     </View>
                 )}
                     

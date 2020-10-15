@@ -75,15 +75,19 @@ const renderDesc = (navigation, id, title, author, year, description, status, pa
                 (   
                     <View>
                     <AppButton title="Read" onPress={() => navigation.navigate('Reader', {
-                        id: id,
-                        title: title,
-                        author: author,
-                        year: year,
-                        status: status,
-                        pageNumber: pageNumber,
-                        contentArr: contentArr,
-                        authorOrigin: authorOrigin,
-                        genre: genre
+                        screen: 'Reader',
+                        params: {
+
+                            id: id,
+                            title: title,
+                            author: author,
+                            year: year,
+                            status: status,
+                            pageNumber: pageNumber,
+                            contentArr: contentArr,
+                            authorOrigin: authorOrigin,
+                            genre: genre
+                        }
                     })} />
                     <AppButton title="Library" onPress={() => navigation.navigate('Home')} />
                     </View>
@@ -92,13 +96,16 @@ const renderDesc = (navigation, id, title, author, year, description, status, pa
                 (
                     <View>
                     <AppButton title="Download" onPress={() => navigation.navigate('Download', {
-                        id: id,
-                        title: title,
-                        author: author,
-                        year: year,
-                        status: status,
-                        contentArr: contentArr,
-                        pageNumber: pageNumber
+                        screen: 'Download',
+                        params: {
+                            id: id,
+                            title: title,
+                            author: author,
+                            year: year,
+                            status: status,
+                            contentArr: contentArr,
+                            pageNumber: pageNumber
+                        }
                     })} />
                     <AppButton title="Library" onPress={() => navigation.navigate('Home')} />
                     </View>

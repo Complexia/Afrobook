@@ -28,7 +28,8 @@ const HomeStackScreen = () => {
         <HomeStack.Navigator headerMode = "screen" screenOptions = {{ headerTintColor: '#f0edf6', headerTitleAlign: "center", headerStyle:{backgroundColor: '#22236a'}}}>
             <HomeStack.Screen name="Home" component={HomeScreen} options={{title: "AfroStory", headerLeft: null,}} />
             <HomeStack.Screen name="Description" component={DescriptionStackScreen} options={{title: "Description"}} />
-            <HomeStack.Screen name="Download" component={DownloadScreen} options={{title: "Downloading"}} />
+            <HomeStack.Screen name="Download" component={DownloadStackScreen} options={{title: "Downloading"}} />
+            <HomeStack.Screen name="HomeStack" component={HomeStackScreen} options={{title: "AfroStory", headerLeft: null,}} />
         </HomeStack.Navigator>
     )
 }
@@ -39,7 +40,7 @@ const DescriptionStackScreen = () => {
         <HomeStack.Navigator headerMode = "screen" screenOptions = {{headerTintColor: '#f0edf6', headerTitleAlign: "center", headerStyle:{backgroundColor: '#22236a'}}} >
             <HomeStack.Screen name="Description" component={DescriptionScreen} options={{title: "Description"}} />
             <HomeStack.Screen name="Reader" component={ReaderScreen} options={{title: "Reader"}} />
-            <HomeStack.Screen name="Download" component={DownloadScreen} options={{title: "Downloading"}} />
+            <HomeStack.Screen name="Download" component={DownloadStackScreen} options={{title: "Downloading"}} />
             <HomeStack.Screen name="Home" component={HomeScreen} options={{title: "AfroStory"}} />
         </HomeStack.Navigator>
     )
@@ -49,8 +50,18 @@ const AboutStackScreen = () => {
     return (
         <HomeStack.Navigator headerMode = "screen" screenOptions = {{headerTintColor: '#f0edf6', headerTitleAlign: "center", headerStyle:{backgroundColor: '#22236a'}}}>
             <HomeStack.Screen name="About" component={AboutScreen} options={{title: "About"}} />
+            <HomeStack.Screen name="Home" component={HomeScreen} options={{title: "AfroStory"}} />
         </HomeStack.Navigator>
         
+    )
+}
+
+const DownloadStackScreen = () => {
+    return (
+        <HomeStack.Navigator headerMode = "screen" screenOptions = {{headerTintColor: '#f0edf6', headerTitleAlign: "center", headerStyle:{backgroundColor: '#22236a'}}} >
+            <HomeStack.Screen name="Download" component={DownloadScreen} options={{title: "Downloading"}} />
+            <HomeStack.Screen name="Home" component={HomeScreen} options={{title: "AfroStory"}} />
+        </HomeStack.Navigator>
     )
 }
 
