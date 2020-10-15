@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useIsFocused } from '@react-navigation/native';
 import { ScrollView, RefreshControl, SafeAreaView, Image, ImageBackground, View, Alert, Text, StyleSheet, TouchableOpacity, ActivityIndicator, FlatList, AsyncStorage, Platform } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
 import Constants from 'expo-constants';
@@ -20,7 +21,11 @@ function setFetching(value) {
 }
 const fetchBooks = (whereFrom, navigation) => {
    
+    const isFocused = useIsFocused();
 
+    
+
+    
     const [isLoading, setLoading] = useState(true);
     const [data, setData] = useState([]);
     const [refreshing, setRefreshing] = useState(false);
@@ -30,7 +35,9 @@ const fetchBooks = (whereFrom, navigation) => {
         navigation.navigate("HomeStack");
         wait(2000).then(() => setRefreshing(false));
     }, []);
-    console.log("refrreshing", refreshing);
+
+    
+    
     try {
 
         useEffect(() => {
@@ -121,29 +128,29 @@ const fetchBooks = (whereFrom, navigation) => {
                     refreshControl={
                         <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
                     }
-                    extraData={refreshing}
+                    
                     renderItem={({ item }) => {
-    
+                        let downloaded = "";
                         let backgroundColor = "black";
+                        let status = "tag";
                         if(item.status == "stored") {
                             backgroundColor = "#22236a";
+                            downloaded = "Downloaded";
+                            item.status = "stored";
+                            status = "stored";
                         }
                         else if(item.status == "fetched") {
                             backgroundColor = "#434447"
+                            downloaded = "Not downloaded"
+                            item.status = "fetched";
+                            status = "fetched";
                         }
     
-                        let downloaded = "";
-                        if(item.status == "stored") {
-                            downloaded = "Downloaded";
-                        }
-                        else if(item.status == "fetched") {
-                            downloaded = "Not downloaded"
-                        }
-                        
+
                         return (
                             <Item
                                 item={item}
-                                
+                                status={status}
                                 style={{ backgroundColor }}
                                 navigation={ navigation }
                                 downloaded = {downloaded}
@@ -177,9 +184,18 @@ const AppButton = ({ onPress, title }) => (
     </TouchableOpacity>
 );
 
-const Item = ({ item, style, navigation, downloaded, bookCount}) => {
+const Item = ({ item, status, style, navigation, downloaded, bookCount}) => {
     let descriptionArr = [];
     let recommended = "";
+    if(status == "stored") {
+        downloaded = "Downloaded";
+    }
+    else if(status == "fetched") {
+        downloaded = "Not downloaded";
+    }
+    else {
+        downloaded = "";
+    }
     if(item.editorsPick) {
         recommended = "Recommended";
     }
@@ -197,8 +213,9 @@ const Item = ({ item, style, navigation, downloaded, bookCount}) => {
                     <AppButton title="Download All" onPress={() => navigation.navigate('Download', {
                         screen: 'Download',
                         params: {
-
-                            pageNumber: 0
+                            individual: false,
+                            pageNumber: 0,
+                            id: item.id
                         }                       
                     })} />
                     <AppButton title="Clear Async" onPress={onPressClear} />
@@ -229,7 +246,7 @@ const Item = ({ item, style, navigation, downloaded, bookCount}) => {
 
                         <Text style={styles.title}>{item.title}</Text>
                         <Text style={styles.titleProps}>{item.author}</Text>
-                        <Text style={styles.titleProps}>{item.genre}</Text>
+                        <Text style={styles.genreProps}>{item.genre}</Text>
                         <Text style={styles.recommendedProp}>{recommended}</Text>
                         <Text style={styles.downloadedProp}>{downloaded}</Text>
                     </TouchableOpacity> 
@@ -349,7 +366,9 @@ const getData = async(whereFrom) => {
                                     title: book.Title,
                                     author: book.Auth_Name,
                                     year: book.Year,
-                                    status: "fetched"
+                                    status: "fetched",
+                                    editorsPick: book.EditorsPicks_bool,
+                                    genre: book.Category
                                 }
                             )
                         }
@@ -616,6 +635,9 @@ const styles = StyleSheet.create({
         color: "#C0C0C0",
         alignSelf: "flex-end"
 
+    },
+    genreProps: {
+        color: "#f3f70c"
     },
     recommendedProp: {
         color: "#f3f70c",

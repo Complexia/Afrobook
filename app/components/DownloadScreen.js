@@ -3,12 +3,17 @@ import { TouchableOpacity, StyleSheet, SafeAreaView, Text, View, TouchableWithou
 
 let checker = 0;
 
-const downloadAll = (navigation, pageNumber) => {
+const downloadAll = (navigation, individual, id) => {
 
     const [isLoading, setLoading] = useState(true);
     const [isGetting, setGetting] = useState(true);
     const [data, setData] = useState([]);
-    const uri = "http://afrostoryapibooks-env.eba-dm7hpfam.us-east-2.elasticbeanstalk.com/books";
+    let uri = "http://afrostoryapibooks-env.eba-dm7hpfam.us-east-2.elasticbeanstalk.com/books";
+    if(individual) {
+        uri = `http://afrostoryapibooks-env.eba-dm7hpfam.us-east-2.elasticbeanstalk.com/books/book/${id}`
+
+    }
+    
     useEffect(() => {
         //let isSubscribed = true;
         fetch(uri)
@@ -84,7 +89,7 @@ const downloadAll = (navigation, pageNumber) => {
 
 }
 const setAllItems = async(data) => {
-    console.log("is this called?", data);
+    
     for(let i=0;i<data.length;i++) {
         //console.log(data[i]["_id"] + "title");
 
@@ -121,8 +126,10 @@ const AppButton = ({ onPress, title }) => (
 const DownloadScreen = ({ route, navigation }) => {
     
     const { pageNumber } = route.params;
+    const { individual } = route.params;
+    const { id } = route.params;
     return (
-        downloadAll(navigation, pageNumber)
+        downloadAll(navigation, individual, id)
     );
 }
 
@@ -130,7 +137,7 @@ const styles = StyleSheet.create({
     
     appButtonContainer: {
         elevation: 8,
-        backgroundColor: "goldenrod",
+        backgroundColor: "#ee5535",
         borderRadius: 10,
         paddingVertical: 10,
         paddingHorizontal: 12,

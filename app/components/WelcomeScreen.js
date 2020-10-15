@@ -13,7 +13,7 @@ const WelcomeScreen = ({ navigation }) => {
     return (
         <TouchableOpacity 
             style={styles.background}
-            onPress={() => navigation.navigate("HomeTab")}
+            onPress={() => navigation.navigate("Home")}
         >
                 
 
@@ -29,7 +29,7 @@ const WelcomeScreen = ({ navigation }) => {
                         resizeMode="contain" 
                     />
                     
-
+                    
                         
 
                     
@@ -96,20 +96,27 @@ const styles = StyleSheet.create({
     logo: {
         
         width: 300,
-        height: 300
+        height: 300,
+        
     },
     click: {
         fontSize: 25,
         fontWeight: "bold",
-        color: "#22236a"
+        color: "#FFFFFF",
+        paddingBottom: 10,
     },
     centerContentImage: {
         alignItems: "center",
         justifyContent: "center",
-        marginBottom: 220
+        marginBottom: 250,
+        paddingLeft: 15
     },
-    centerContentText: {
-
+    slogan: {
+        fontWeight: "bold",
+        fontSize: 15,
+        color: "#FFFFFF",
+        textTransform: "uppercase",
+        fontStyle: "italic"
     }
 })
 

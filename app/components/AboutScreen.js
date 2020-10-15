@@ -12,13 +12,13 @@ const AboutScreen = ({ navigation}) => {
     
     return (
         <SafeAreaView style={styles.container}>
-            <ScrollView>
-                <Text style={styles.titleText}>About AfroStory</Text>
+            <ScrollView style={styles.scrollView}>
+                <Text style={styles.titleText}>About</Text>
                 <View style={styles.borderLine}></View>
                 <Image 
                 style={styles.logo} source={require("../assets/transparentLogo.png")}
                 resizeMode="contain" />
-                
+                <Text style={styles.sloganText}>Write your own story</Text>
                 <Text style={styles.descriptionText}>
                     We are inspired to put a billion books in African households where there were none or few before, and 
                     a small black author focused library in every home. 
@@ -32,7 +32,7 @@ const AboutScreen = ({ navigation}) => {
                     ave caps on our profits in order to transition into a non-profit organization as soon as we can.
                 </Text>
                 <View style={styles.borderLine}></View>
-                <Text style={styles.sloganText}>Write your own story</Text>
+                
                 <Text style={styles.disclaimerText}>
                     DISCLAIMER: This is to our knowledge (and following our own desktop research) a 
                     public domain book and thus we are free to distribute it in this form and format. 
@@ -56,7 +56,9 @@ const styles = StyleSheet.create({
     titleText: {
         fontWeight: "bold",
         fontSize: 40,
-        color: "#FFFFFF"
+        color: "#FFFFFF",
+        paddingBottom: 10,
+        alignSelf: "center"
         
     },
     sloganText: {
@@ -64,14 +66,17 @@ const styles = StyleSheet.create({
         fontSize: 30,
         color: "#FFFFFF",
         textTransform: "uppercase",
-        fontStyle: "italic"
+        fontStyle: "italic",
+        paddingBottom: 10,
+        paddingTop: 10
     
     },
     borderLine: {
         borderBottomColor: "#FFFFFF",
         borderBottomWidth: 1,
         padding: 10,
-        marginBottom: 10
+        paddingBottom: 10,
+        marginBottom: 20
     },
     descriptionText: {
         color: "#C0C0C0",

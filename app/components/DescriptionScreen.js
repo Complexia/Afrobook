@@ -74,9 +74,9 @@ const renderDesc = (navigation, id, title, author, year, description, status, pa
             {status === "stored" ?
                 (   
                     <View>
-                    <AppButton title="Read" onPress={() => navigation.navigate('Reader', {
-                        screen: 'Reader',
-                        params: {
+                    <AppButton title="Read" onPress={() => navigation.navigate('Reader', 
+                    {
+                        
 
                             id: id,
                             title: title,
@@ -87,7 +87,7 @@ const renderDesc = (navigation, id, title, author, year, description, status, pa
                             contentArr: contentArr,
                             authorOrigin: authorOrigin,
                             genre: genre
-                        }
+                        
                     })} />
                     <AppButton title="Library" onPress={() => navigation.navigate('Home')} />
                     </View>
@@ -104,7 +104,9 @@ const renderDesc = (navigation, id, title, author, year, description, status, pa
                             year: year,
                             status: status,
                             contentArr: contentArr,
-                            pageNumber: pageNumber
+                            pageNumber: pageNumber,
+                            individual: true,
+                            
                         }
                     })} />
                     <AppButton title="Library" onPress={() => navigation.navigate('Home')} />

@@ -13,7 +13,8 @@ function setFetching(value) {
 }
 
 const fetchContent = (id, status, title, author, year, contentArr, pageNumber, authorOrigin, genre) => {
-    
+    //console.log("AA", contentArr);
+    console.log("From desc", id, status, title, author, year, contentArr, pageNumber, authorOrigin, genre)
     if(contentArr.length == 0) {
         isDone = false;
     }

@@ -1,5 +1,5 @@
 import 'react-native-gesture-handler';
-import {StatusBar} from 'expo-status-bar';
+
 import React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { StyleSheet } from 'react-native';
@@ -13,7 +13,7 @@ import ReaderScreen from './app/components/ReaderScreen';
 import DescriptionScreen from './app/components/DescriptionScreen';
 
 import DownloadScreen from './app/components/DownloadScreen';
-
+import { useIsFocused } from '@react-navigation/native';
 
 import { createMaterialBottomTabNavigator } from '@react-navigation/material-bottom-tabs';
 import { MaterialCommunityIcons } from 'react-native-vector-icons';
@@ -61,45 +61,41 @@ const DownloadStackScreen = () => {
         <HomeStack.Navigator headerMode = "screen" screenOptions = {{headerTintColor: '#f0edf6', headerTitleAlign: "center", headerStyle:{backgroundColor: '#22236a'}}} >
             <HomeStack.Screen name="Download" component={DownloadScreen} options={{title: "Downloading"}} />
             <HomeStack.Screen name="Home" component={HomeScreen} options={{title: "AfroStory"}} />
+            
         </HomeStack.Navigator>
     )
 }
 
-const TitlesStackScreen = () => {
-    return (
-        <HomeStack.Navigator>
-            <HomeStack.Screen name="Titles" component={TitlesScreen} options={{title: "New books"}} />
-            <HomeStack.Screen name="Description" component={DescriptionScreen} options={{title: "Description"}} />
-        </HomeStack.Navigator>
-    )
-}
+
 
 const HomeTabScreen = () => {
+    
+    
     return (
-
         
-                    
-        <Tabs.Navigator
-            initialRouteName="Home"
-            activeColor="#f0edf6"
-            inactiveColor="#C0C0C0"
-            barStyle={{ backgroundColor: '#22236a', paddingBottom: 2 }}
+            <Tabs.Navigator
             
-        >
-            <Tabs.Screen name="Home" component={HomeStackScreen} options = {{
-                tabBarLabel: 'Home',
+                activeColor="#f0edf6"
+                inactiveColor="#C0C0C0"
+                barStyle={{ backgroundColor: '#22236a', paddingBottom: 2 }}
                 
-                tabBarIcon: ({ color }) => (
-                    <MaterialCommunityIcons name="home" color={color} size={26} />
-                ),
-            }} />
-        <Tabs.Screen name="About" component={AboutStackScreen} options = {{
-                tabBarLabel: 'About',
-                tabBarIcon: ({ color }) => (
-                    <MaterialCommunityIcons name="information-outline" color={color} size={26} />
-                ),
-            }} />
-        </Tabs.Navigator>
+            >
+                <Tabs.Screen name="Home" component={HomeStackScreen} options = {{
+                    tabBarLabel: 'Home',
+                    
+                    tabBarIcon: ({ color }) => (
+                        <MaterialCommunityIcons name="home" color={color} size={26} />
+                    ),
+                }} />
+                <Tabs.Screen name="About" component={AboutStackScreen} options = {{
+                    tabBarLabel: 'About',
+                    tabBarIcon: ({ color }) => (
+                        <MaterialCommunityIcons name="information-outline" color={color} size={26} />
+                    ),
+                }} />
+            </Tabs.Navigator>
+        
+        
                 
     )
 }
@@ -110,7 +106,7 @@ const LoadStackScreen = () => {
             
             <HomeStack.Navigator headerMode = "screen" screenOptions = {{headerLeft: null, headerTintColor: '#f0edf6', headerTitleAlign: "center", headerStyle:{backgroundColor: '#22236a'}}}>
                 <HomeStack.Screen name="Welcome" component={WelcomeScreen} options={{title: "AfroStory"}}/>
-                <HomeStack.Screen name="HomeTab" component ={HomeTabScreen} options={{title: "AfroStory" }} />
+                <HomeStack.Screen name="Home" component ={HomeTabScreen} options={{title: "AfroStory" }} />
             </HomeStack.Navigator>
         </NavigationContainer>
     )
