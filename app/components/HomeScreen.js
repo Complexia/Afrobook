@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, Image, ImageBackground, View, Alert, Text, StyleSheet, TouchableOpacity, ActivityIndicator, FlatList, AsyncStorage, Platform } from 'react-native';
+import { ScrollView, RefreshControl, SafeAreaView, Image, ImageBackground, View, Alert, Text, StyleSheet, TouchableOpacity, ActivityIndicator, FlatList, AsyncStorage, Platform } from 'react-native';
 import NetInfo from "@react-native-community/netinfo";
+import Constants from 'expo-constants';
 
 
 let storedBooksArr = [];
@@ -96,7 +97,7 @@ const fetchBooks = (whereFrom, navigation) => {
 
     return (
         <SafeAreaView>
-            {!isDone ? <ActivityIndicator /> : (
+            {!isDone ? <ActivityIndicator style={styles.activityIndicator}/> : (
                 
                     
                 renderFlatList(booksArr, navigation)
@@ -125,7 +126,12 @@ const AppButton = ({ onPress, title }) => (
 
 const Item = ({ item, style, navigation, downloaded, bookCount }) => {
     let descriptionArr = [];
-    console.log(item.pageNumber);
+    let recommended = "";
+    if(item.editorsPick) {
+        recommended = "Recommended";
+    }
+    
+    
     return (
 
         <View>
@@ -164,7 +170,8 @@ const Item = ({ item, style, navigation, downloaded, bookCount }) => {
 
                         <Text style={styles.title}>{item.title}</Text>
                         <Text style={styles.titleProps}>{item.author}</Text>
-                        <Text style={styles.recommendedProp}>Recommended</Text>
+                        <Text style={styles.titleProps}>{item.genre}</Text>
+                        <Text style={styles.recommendedProp}>{recommended}</Text>
                         <Text style={styles.downloadedProp}>{downloaded}</Text>
                     </TouchableOpacity> 
 
@@ -191,7 +198,9 @@ const Item = ({ item, style, navigation, downloaded, bookCount }) => {
                     style={[styles.item, style]}>
 
                         <Text style={styles.title}>{item.title}</Text>
-                        <Text style={styles.titleProps}>{item.author} {item.year}</Text>
+                        <Text style={styles.titleProps}>{item.author} </Text>
+                        <Text style={styles.titleProps}>{item.genre} </Text>
+                        <Text style={styles.recommendedProp}>{recommended}</Text>
                         <Text style={styles.downloadedProp}>{downloaded}</Text>
                     </TouchableOpacity> 
                 )
@@ -212,7 +221,7 @@ const getData = async(whereFrom) => {
         try {
             let newKeys = [];
             const keys = await AsyncStorage.getAllKeys();
-            
+            //AsyncStorage.multiRemove(keys);
             //every 13th value in the DB is id
             for(let i=0;i < keys.length-4;i++) {
                if (i % 13 == 0) {
@@ -297,11 +306,24 @@ const getData = async(whereFrom) => {
 }
 
 const renderFlatList = (data, navigation) => {
+
+    
+
+    // const onRefresh = React.useCallback(() => {
+    //   setRefreshing(true);
+  
+    //   wait(2000).then(() => setRefreshing(false));
+    // }, []);// 
+    
     return (
         <SafeAreaView>
             <FlatList
                 data={data}
                 keyExtractor={({ id }) => id}
+                // refreshControl={
+                //     <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+                // }
+                extraData={data}
                 renderItem={({ item }) => {
 
                     let backgroundColor = "black";
@@ -392,30 +414,50 @@ const handleFirstConnectivityChange = isConnected => {
 };
 
 const useForceUpdate = () => {
-    console.log("called refresh");
+    
     const [value, setValue] = useState(0); // integer state
     return () => setValue(value => ++value); // update the state to force render
 }
 
+const wait = (timeout) => {
+    return new Promise(resolve => {
+      setTimeout(resolve, timeout);
+    });
+}
+
 const HomeScreen = ({ navigation }) => {
     //const forceUpdate = useForceUpdate();
-    const [value, setValue] = useState(0);
-    useEffect(() => {
-        const unsubscribe = navigation.addListener('focus', () => {
-          // The screen is focused         
-          
-          //Update value to force rerender
-          return setValue(value => ++value);
-          
-        });
     
-        // Return the function to unsubscribe from the event so it gets removed on unmount
-        return unsubscribe;
-    }, [navigation]);
+    // useEffect(() => {
+    //     const unsubscribe = navigation.addListener('focus', () => {
+    //       // The screen is focused         
+    //       //console.log("Focused");
+    //       //Update value to force rerender
+    //     //   let some = value;
+    //     //   setValue(value + some);
+            
+    //         setLedger(false);
+    //         //useForceUpdate();
+          
+    //     //   else {
+    //     //       setLedger(true);
+    //     //   }
+    //       console.log("Focused", ledger);
+          
+    //     });
+    
+    //     // Return the function to unsubscribe from the event so it gets removed on unmount
+    //     return unsubscribe;
+    // }, [navigation]);
+
+
+
     return (
-        
-         returnScreen(navigation)
-        
+            
+         
+                returnScreen(navigation)
+            
+           
     );
 }
 
@@ -436,6 +478,14 @@ const styles = StyleSheet.create({
     background: {
         flex: 1,   
         backgroundColor: "black"
+    },
+    scrollView: {
+        
+        backgroundColor: "dodgerblue"
+    },
+    scrollView1: {
+        
+        backgroundColor: "dodgerblue"
     },
     text: {
         fontWeight: "bold",
@@ -474,7 +524,7 @@ const styles = StyleSheet.create({
     },
     appButtonContainer: {
         elevation: 8,
-        backgroundColor: "#22236a",
+        backgroundColor: "#ee5535",
         borderRadius: 10,
         paddingVertical: 10,
         paddingHorizontal: 12,

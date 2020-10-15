@@ -12,12 +12,13 @@ const AboutScreen = ({ navigation}) => {
     
     return (
         <SafeAreaView style={styles.container}>
-            <Text style={styles.titleText}>About AfroStory</Text>
-            <View style={styles.borderLine}></View>
-            <Image 
-            style={styles.logo} source={require("../assets/transparentLogo.png")}
-            resizeMode="contain" />
             <ScrollView>
+                <Text style={styles.titleText}>About AfroStory</Text>
+                <View style={styles.borderLine}></View>
+                <Image 
+                style={styles.logo} source={require("../assets/transparentLogo.png")}
+                resizeMode="contain" />
+                
                 <Text style={styles.descriptionText}>
                     We are inspired to put a billion books in African households where there were none or few before, and 
                     a small black author focused library in every home. 
@@ -29,6 +30,19 @@ const AboutScreen = ({ navigation}) => {
                     and prices that only fall with time, is also a big part of our values and what we believe in.
                     We treat all our staff that helped establish the business (all shareholders) with kindness and respect.
                     ave caps on our profits in order to transition into a non-profit organization as soon as we can.
+                </Text>
+                <View style={styles.borderLine}></View>
+                <Text style={styles.sloganText}>Write your own story</Text>
+                <Text style={styles.disclaimerText}>
+                    DISCLAIMER: This is to our knowledge (and following our own desktop research) a 
+                    public domain book and thus we are free to distribute it in this form and format. 
+                    Please direct any queries to us at www.afrostory.org and we will attend to them as 
+                    quickly as we can. Sincerely, Team AfroStory (: Let's get Africa reading more 
+                    together and as one! The contents are free to enjoy. The lists of literature, 
+                    sub-lists of literature, and App itself including design, function and concept 
+                    are copyrighted Intellectual Property owned by: 
+                    AfroStory (Pty) Ltd. 2020. Registered in South Africa. All rights reserved.
+
                 </Text>
             </ScrollView>
 
@@ -45,6 +59,14 @@ const styles = StyleSheet.create({
         color: "#FFFFFF"
         
     },
+    sloganText: {
+        fontWeight: "bold",
+        fontSize: 30,
+        color: "#FFFFFF",
+        textTransform: "uppercase",
+        fontStyle: "italic"
+    
+    },
     borderLine: {
         borderBottomColor: "#FFFFFF",
         borderBottomWidth: 1,
@@ -52,6 +74,10 @@ const styles = StyleSheet.create({
         marginBottom: 10
     },
     descriptionText: {
+        color: "#C0C0C0",
+        fontSize: 15
+    },
+    disclaimerText: {
         color: "#C0C0C0",
         fontSize: 15
     },

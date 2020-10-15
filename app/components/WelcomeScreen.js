@@ -22,24 +22,23 @@ const WelcomeScreen = ({ navigation }) => {
                 source={require("../assets/loadScreenPicture.jpg")}
                 imageStyle={{ resizeMode: 'cover' }}
             >
-                <Image 
-                    style={styles.logo} source={require("../assets/transparentLogo2.png")}
-                    resizeMode="contain" />
-                
+                <View style={styles.centerContentImage}>
 
-                    {/* <AppButton title="Login" onPress={() => navigation.navigate('Home')} />
-                    <AppButton title="Register" onPress={() => navigation.navigate('Home')} /> */}
+                    <Image 
+                        style={styles.logo} source={require("../assets/transparentLogo2.png")}
+                        resizeMode="contain" 
+                    />
+                    
 
+                        
+
+                    
+                </View>
+                <View style={styles.centerContentText}>
                     <Text style={styles.click}>Click anywhere to continue...</Text>
+                </View>
                 
-                {/* <TouchableOpacity 
-                    style={styles.enterButton} 
-                    onPress={() => navigation.navigate('Home')}>
-
-                    <View>
-                        <Text style={styles.enterButtonText}>Afrostory</Text> 
-                    </View>
-                </TouchableOpacity> */}
+               
 
             </ImageBackground>
         </TouchableOpacity>
@@ -95,8 +94,7 @@ const styles = StyleSheet.create({
 
     },
     logo: {
-        alignItems: "center",
-        justifyContent: "center",
+        
         width: 300,
         height: 300
     },
@@ -104,6 +102,14 @@ const styles = StyleSheet.create({
         fontSize: 25,
         fontWeight: "bold",
         color: "#22236a"
+    },
+    centerContentImage: {
+        alignItems: "center",
+        justifyContent: "center",
+        marginBottom: 220
+    },
+    centerContentText: {
+
     }
 })
 

@@ -38,9 +38,9 @@ const fetchContent = (id, status, title, author, year, contentArr, pageNumber, a
     catch(error) {
         console.log("caught this here");
     }
-    console.log(contentArr.length);
+    
     if(!isLoading && !isFetching && contentArr.length > 0) {
-        //console.log("Yippi", contentArr);
+        
         isDone = true;
 
     }
@@ -118,7 +118,7 @@ const testView = (words) => {
             
             //let contentOffset = e.nativeEvent.contentOffset;
             let viewSize = e.nativeEvent.layout;
-            console.log("view", viewSize);
+            
             // let layoutWidth = viewSize.width;
             // let layoutOffset = viewSize.x;
             
@@ -139,7 +139,7 @@ const constructPages = (data, wordsNumber) => {
         return b;
     }
     let words = splitString(data[0],wordsNumber);
-    //console.log(words);
+    
     //let words = data[0].match(/(.*?\s){50}/g);
     
     
@@ -180,17 +180,17 @@ const paginateData = (data, pageNumber, id, author, year, title, authorOrigin, g
             
                 //pageWords = constructPages(data, 50);
                 let viewSize = e.nativeEvent.layout;
-                //console.log("view", viewSize);
+                
                 dimensionsHeight = viewSize.height;
                 if (viewSize.height < Dimensions.get('screen').height) {
-                    console.log("less")
+                    
                     wordNumber +=10;
-                    //console.log("Calling paginate...", e);
+                    
                     
                     //paginateData(data, pageNumber, id);
                 }
                 else{
-                    console.log("Successsss");
+                    
                     dimensionReady = true;
                 }
                 
@@ -199,7 +199,7 @@ const paginateData = (data, pageNumber, id, author, year, title, authorOrigin, g
                 <Text
                     onTextLayout={ (e) => {
                         const { lines } = e.nativeEvent;
-                        console.log("lines", lines);
+                        
                     } }
                 >
                     {pageWords[0]}
@@ -228,14 +228,7 @@ const renderFlatList = (data, pageNumber, id) => {
         let pageNum = await AsyncStorage.getItem(id + "pageNumber");
         return pageNum;
     }
-    // const getItemLayout = (data, index) => {
-        
-    //     const length = layoutWidth;
-    //     const offset = layoutOffset;
-        
-    //     //console.log("i", index, "l", length, "o", offset);
-    //     return {length, offset, index}
-    // }
+    
     let getItemLayout;
     function onScrollEnd(e) {
         let contentOffset = e.nativeEvent.contentOffset;
@@ -244,7 +237,7 @@ const renderFlatList = (data, pageNumber, id) => {
         layoutOffset = contentOffset.x;
         // Divide the horizontal offset by the width of the view to see which page is visible
         let pageNum = Math.floor(contentOffset.x / viewSize.width);
-        //console.log('scrolled to page ', pageNum);
+        
         savePageNumber(id, pageNum);
     }
     
@@ -262,7 +255,7 @@ const renderFlatList = (data, pageNumber, id) => {
                 const length = layoutWidth;
                 const offset = layoutOffset;
                 
-                //console.log("i", index, "l", length, "o", offset);
+                
                 return {length, offset, index}
             }
             

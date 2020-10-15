@@ -13,35 +13,50 @@ const downloadAll = (navigation, pageNumber) => {
         //let isSubscribed = true;
         fetch(uri)
         .then((response) => response.json())
-        .then((json) => setData(json))
+        .then((json) => setAllItems(json))
+        //.then(() => setAllItems(data))
+        .then(() => setGetting(false))
         .catch((error) => console.error(error))
         .finally(() => setLoading(false));
     }, []);
 
-    if(!isLoading && checker == 0) {
-        checker = 1;
-        let initialPageNumber = pageNumber;
-        for(let i=0;i<data.length;i++) {
-            //console.log(data[i]["_id"] + "title");
+    //if(!isLoading) {
+        
 
-            AsyncStorage.setItem(data[i]["_id"], JSON.stringify(data[i]["_id"]));
-            AsyncStorage.setItem(data[i]["_id"] + "title", JSON.stringify(data[i]["Title"]));
-            AsyncStorage.setItem(data[i]["_id"] + "authorName", JSON.stringify(data[i]["Auth_Name"]));
-            AsyncStorage.setItem(data[i]["_id"] + "authorOrigin", JSON.stringify(data[i]["Auth_Origin"]));
-            AsyncStorage.setItem(data[i]["_id"] + "category", JSON.stringify(data[i]["Category"]));
-            AsyncStorage.setItem(data[i]["_id"] + "averageRating", JSON.stringify(data[i]["Avg_Rating"]));
-            AsyncStorage.setItem(data[i]["_id"] + "description", JSON.stringify(data[i]["Description"]));
-            AsyncStorage.setItem(data[i]["_id"] + "year", JSON.stringify(data[i]["Year"]));
-            AsyncStorage.setItem(data[i]["_id"] + "downloadCount", JSON.stringify(data[i]["Download_Count"]));
-            AsyncStorage.setItem(data[i]["_id"] + "editorsPick", JSON.stringify(data[i]["EditorsPicks_bool"]));
-            AsyncStorage.setItem(data[i]["_id"] + "ratingCount", JSON.stringify(data[i]["Rating_Count"]));
-            AsyncStorage.setItem(data[i]["_id"] + "content", JSON.stringify(data[i]["Text"]));
+        // useEffect(() => {
+        //     //let isSubscribed = true;
+        //     setAllItems(data)
+        //     .catch((error) => console.error(error))
+        //     .finally(() => setGetting(false));
+        // }, []);
+
+
+        // let initialPageNumber = 0;
+        // for(let i=0;i<data.length;i++) {
+        //     //console.log(data[i]["_id"] + "title");
+
+        //     AsyncStorage.setItem(data[i]["_id"], JSON.stringify(data[i]["_id"]));
+        //     AsyncStorage.setItem(data[i]["_id"] + "title", JSON.stringify(data[i]["Title"]));
+        //     AsyncStorage.setItem(data[i]["_id"] + "authorName", JSON.stringify(data[i]["Auth_Name"]));
+        //     AsyncStorage.setItem(data[i]["_id"] + "authorOrigin", JSON.stringify(data[i]["Auth_Origin"]));
+        //     AsyncStorage.setItem(data[i]["_id"] + "category", JSON.stringify(data[i]["Category"]));
+        //     AsyncStorage.setItem(data[i]["_id"] + "averageRating", JSON.stringify(data[i]["Avg_Rating"]));
+        //     AsyncStorage.setItem(data[i]["_id"] + "description", JSON.stringify(data[i]["Description"]));
+        //     AsyncStorage.setItem(data[i]["_id"] + "year", JSON.stringify(data[i]["Year"]));
+        //     AsyncStorage.setItem(data[i]["_id"] + "downloadCount", JSON.stringify(data[i]["Download_Count"]));
+        //     AsyncStorage.setItem(data[i]["_id"] + "editorsPick", JSON.stringify(data[i]["EditorsPicks_bool"]));
+        //     AsyncStorage.setItem(data[i]["_id"] + "ratingCount", JSON.stringify(data[i]["Rating_Count"]));
+        //     AsyncStorage.setItem(data[i]["_id"] + "content", JSON.stringify(data[i]["Text"]));
             
-            //AsyncStorage.setItem(data[i]["_id"] + "pageNumber", JSON.stringify(initialPageNumber));
+        //     //let isPageNumber = await AsyncStorage.getItem(data[i]["_id"] + pageNumber);
+            
 
-        }
-        setGetting(false);
-    }
+        //     AsyncStorage.setItem(data[i]["_id"] + "pageNumber", JSON.stringify(initialPageNumber));
+            
+
+        // }
+        // setGetting(false);
+    //}
 
     return (
         <SafeAreaView style={styles.container}>
@@ -67,6 +82,34 @@ const downloadAll = (navigation, pageNumber) => {
         </SafeAreaView>
     )
 
+}
+const setAllItems = async(data) => {
+    console.log("is this called?", data);
+    for(let i=0;i<data.length;i++) {
+        //console.log(data[i]["_id"] + "title");
+
+        AsyncStorage.setItem(data[i]["_id"], JSON.stringify(data[i]["_id"]));
+        AsyncStorage.setItem(data[i]["_id"] + "title", JSON.stringify(data[i]["Title"]));
+        AsyncStorage.setItem(data[i]["_id"] + "authorName", JSON.stringify(data[i]["Auth_Name"]));
+        AsyncStorage.setItem(data[i]["_id"] + "authorOrigin", JSON.stringify(data[i]["Auth_Origin"]));
+        AsyncStorage.setItem(data[i]["_id"] + "category", JSON.stringify(data[i]["Category"]));
+        AsyncStorage.setItem(data[i]["_id"] + "averageRating", JSON.stringify(data[i]["Avg_Rating"]));
+        AsyncStorage.setItem(data[i]["_id"] + "description", JSON.stringify(data[i]["Description"]));
+        AsyncStorage.setItem(data[i]["_id"] + "year", JSON.stringify(data[i]["Year"]));
+        AsyncStorage.setItem(data[i]["_id"] + "downloadCount", JSON.stringify(data[i]["Download_Count"]));
+        AsyncStorage.setItem(data[i]["_id"] + "editorsPick", JSON.stringify(data[i]["EditorsPicks_bool"]));
+        AsyncStorage.setItem(data[i]["_id"] + "ratingCount", JSON.stringify(data[i]["Rating_Count"]));
+        AsyncStorage.setItem(data[i]["_id"] + "content", JSON.stringify(data[i]["Text"]));
+        
+        let isPageNumber = await AsyncStorage.getItem(data[i]["_id"] + "pageNumber");
+        if(!isPageNumber) {
+            AsyncStorage.setItem(data[i]["_id"] + "pageNumber", JSON.stringify(0));
+        }
+
+        
+        
+
+    }
 }
 
 const AppButton = ({ onPress, title }) => (

@@ -30,7 +30,7 @@ const fetchDesc = (navigation, id, status, title, author, year, descArr, pageNum
     
     const [isLoading, setLoading] = useState(true);
     try {
-        console.log(whereFrom);
+        
         useEffect(() => {
             getData(whereFrom, id, title, author, year, descArr)
             .catch(function(error) {
@@ -45,7 +45,7 @@ const fetchDesc = (navigation, id, status, title, author, year, descArr, pageNum
     }
     console.log(descArr.length);
     if(!isLoading && !isFetching && descArr.length > 0) {
-        //console.log("Yippi", descArr);
+        
         isDone = true;
 
     }
@@ -72,7 +72,8 @@ const renderDesc = (navigation, id, title, author, year, description, status, pa
             </ScrollView>
 
             {status === "stored" ?
-                (
+                (   
+                    <View>
                     <AppButton title="Read" onPress={() => navigation.navigate('Reader', {
                         id: id,
                         title: title,
@@ -84,9 +85,12 @@ const renderDesc = (navigation, id, title, author, year, description, status, pa
                         authorOrigin: authorOrigin,
                         genre: genre
                     })} />
-                )
+                    <AppButton title="Library" onPress={() => navigation.navigate('Home')} />
+                    </View>
+                )   
                 :
                 (
+                    <View>
                     <AppButton title="Download" onPress={() => navigation.navigate('Download', {
                         id: id,
                         title: title,
@@ -96,7 +100,11 @@ const renderDesc = (navigation, id, title, author, year, description, status, pa
                         contentArr: contentArr,
                         pageNumber: pageNumber
                     })} />
+                    <AppButton title="Library" onPress={() => navigation.navigate('Home')} />
+                    </View>
+                    
                 )
+                
             }
 
         </SafeAreaView>
@@ -163,7 +171,7 @@ const DescriptionScreen = ({ route, navigation }) => {
     const { authorOrigin } = route.params;
     const { genre } = route.params;
 
-    //console.log("From desc", title, id, year, author, status, pageNumber);
+    
     
     
     return (
