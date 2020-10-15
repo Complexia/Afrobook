@@ -37,7 +37,7 @@ const downloadAll = (navigation, pageNumber) => {
             AsyncStorage.setItem(data[i]["_id"] + "ratingCount", JSON.stringify(data[i]["Rating_Count"]));
             AsyncStorage.setItem(data[i]["_id"] + "content", JSON.stringify(data[i]["Text"]));
             
-            AsyncStorage.setItem(data[i]["_id"] + "pageNumber", JSON.stringify(initialPageNumber));
+            //AsyncStorage.setItem(data[i]["_id"] + "pageNumber", JSON.stringify(initialPageNumber));
 
         }
         setGetting(false);

@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { SafeAreaView, View, Text, StyleSheet, Button, ActivityIndicator, AsyncStorage, TouchableOpacity } from "react-native";
+import { ScrollView } from 'react-native-gesture-handler';
 
 
 let isFetching = true;
@@ -62,12 +63,13 @@ const renderDesc = (navigation, id, title, author, year, description, status, pa
     let contentArr = [];
     return (
         <SafeAreaView style={styles.container}>
-
-            <Text style={styles.titleText}>{title}</Text>
-            <Text style={styles.authorText}>by {author}, {year}, {authorOrigin}</Text>
-            <Text style={styles.authorText}>{genre}</Text>
-            <View style={styles.borderLine}></View>
-            <Text style={styles.descriptionText}>{description}</Text>
+            <ScrollView>
+                <Text style={styles.titleText}>{title}</Text>
+                <Text style={styles.authorText}>by {author}, {year}, {authorOrigin}</Text>
+                <Text style={styles.authorText}>{genre}</Text>
+                <View style={styles.borderLine}></View>
+                <Text style={styles.descriptionText}>{description}</Text>
+            </ScrollView>
 
             {status === "stored" ?
                 (

@@ -306,10 +306,10 @@ const renderFlatList = (data, navigation) => {
 
                     let backgroundColor = "black";
                     if(item.status == "stored") {
-                        backgroundColor = "#ee5535";
+                        backgroundColor = "#22236a";
                     }
                     else if(item.status == "fetched") {
-                        backgroundColor = "#22236a"
+                        backgroundColor = "#434447"
                     }
 
                     let downloaded = "";
@@ -399,13 +399,13 @@ const useForceUpdate = () => {
 
 const HomeScreen = ({ navigation }) => {
     //const forceUpdate = useForceUpdate();
-
+    const [value, setValue] = useState(0);
     useEffect(() => {
         const unsubscribe = navigation.addListener('focus', () => {
-          // The screen is focused
-          // Call any action
-          //const forceUpdate = useForceUpdate();
-          console.log("focused")
+          // The screen is focused         
+          
+          //Update value to force rerender
+          return setValue(value => ++value);
           
         });
     

@@ -62,7 +62,12 @@ const getData = async(whereFrom, id, title, author, year, contentArr) => {
 
             let contentAsync = await AsyncStorage.getItem(id + "content");
             let pageNumberAsync = await AsyncStorage.getItem(id + "pageNumber");
-            let pageNumber = JSON.parse(pageNumberAsync);
+            let pageNumber = 0;
+            if(pageNumberAsync !== null) {
+                pageNumber = JSON.parse(pageNumberAsync); 
+            }
+            
+            
             let content = JSON.parse(contentAsync);
             cArr.push(content);
             contentArr.push(
@@ -307,12 +312,17 @@ const Item = (item) => {
             {item.item.pageNumber === "x" ? (
                 
                 <View style={styles.pageIntro}>
-                    <Image style={styles.logo} source={require("../assets/AfroStory_Stacked_Purple_R.jpg")} />
-                    <Text style={styles.pageIntroTextTitle}>{item.item.pageContent[4]}</Text>
-                    <Text style={styles.pageIntroTextAuthor}>{item.item.pageContent[0]}</Text>
-                    <Text style={styles.pageIntroTextOrigin}>{item.item.pageContent[1]}</Text>
-                    <Text style={styles.pageIntroTextYear}>{item.item.pageContent[2]}</Text>
-                    <Text style={styles.pageIntroTextGenre}>{item.item.pageContent[3]}</Text>
+                    <ScrollView>
+
+                        <Image 
+                            style={styles.logo} source={require("../assets/transparentLogo2.png")}
+                            resizeMode="contain" />
+                        <Text style={styles.pageIntroTextTitle}>{item.item.pageContent[4]}</Text>
+                        <Text style={styles.pageIntroTextAuthor}>{item.item.pageContent[0]}</Text>
+                        <Text style={styles.pageIntroTextOrigin}>{item.item.pageContent[1]}</Text>
+                        <Text style={styles.pageIntroTextYear}>{item.item.pageContent[2]}</Text>
+                        <Text style={styles.pageIntroTextGenre}>{item.item.pageContent[3]}</Text>
+                    </ScrollView>
                     
                 </View>
             )
@@ -407,26 +417,31 @@ const styles = StyleSheet.create({
     },
     pageIntroTextAuthor: {
         fontSize: 27,
+        alignSelf: "center"
         
     },
     pageIntroTextOrigin: {
         fontSize: 27,
+        alignSelf: "center"
         
     },
     pageIntroTextYear: {
         fontSize: 27,
-        fontStyle: "italic"
+        fontStyle: "italic",
+        alignSelf: "center"
         
     },
 
     pageIntroTextGenre: {
         fontSize: 27,
+        alignSelf: "center"
         
         
     },
     logo: {
         width: 300,
-        height: 300
+        height: 300,
+        alignSelf: "center"
     }
     
 

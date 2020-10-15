@@ -24,6 +24,7 @@
     "react-flip-page": "^1.6.4",
     "react-native": "https://github.com/expo/react-native/archive/sdk-38.0.2.tar.gz",
     "react-native-flip-page": "^0.5.0",
+    "react-native-fs": "^2.16.6",
     "react-native-gesture-handler": "^1.6.1",
     "react-native-paper": "^4.2.0",
     "react-native-reanimated": "~1.9.0",

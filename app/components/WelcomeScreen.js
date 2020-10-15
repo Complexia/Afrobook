@@ -11,35 +11,51 @@ const AppButton = ({ onPress, title }) => (
 
 const WelcomeScreen = ({ navigation }) => {
     return (
-        <ImageBackground 
-            style={styles.background} 
-            source={require("../assets/AfroStory_Stacked_Purple_R.jpg")}>
-            
-            {/* <Image style={styles.logo} source={require("../assets/logo-red.png")} /> */}
-            <View style={styles.screenContainer}>
+        <TouchableOpacity 
+            style={styles.background}
+            onPress={() => navigation.navigate("HomeTab")}
+        >
+                
 
-                <AppButton title="Login" onPress={() => navigation.navigate('Home')} />
-                <AppButton title="Register" onPress={() => navigation.navigate('Home')} />
-            </View>
-            {/* <TouchableOpacity 
-                style={styles.enterButton} 
-                onPress={() => navigation.navigate('Home')}>
+            <ImageBackground 
+                style={styles.backgroundImage} 
+                source={require("../assets/loadScreenPicture.jpg")}
+                imageStyle={{ resizeMode: 'cover' }}
+            >
+                <Image 
+                    style={styles.logo} source={require("../assets/transparentLogo2.png")}
+                    resizeMode="contain" />
+                
 
-                <View>
-                    <Text style={styles.enterButtonText}>Afrostory</Text> 
-                </View>
-            </TouchableOpacity> */}
+                    {/* <AppButton title="Login" onPress={() => navigation.navigate('Home')} />
+                    <AppButton title="Register" onPress={() => navigation.navigate('Home')} /> */}
 
-        </ImageBackground>
+                    <Text style={styles.click}>Click anywhere to continue...</Text>
+                
+                {/* <TouchableOpacity 
+                    style={styles.enterButton} 
+                    onPress={() => navigation.navigate('Home')}>
+
+                    <View>
+                        <Text style={styles.enterButtonText}>Afrostory</Text> 
+                    </View>
+                </TouchableOpacity> */}
+
+            </ImageBackground>
+        </TouchableOpacity>
     );
 }
 
 const styles = StyleSheet.create({
     background: {
         flex: 1,
-        justifyContent: "flex-end",
-        alignItems: "center"
+        
 
+    },
+    backgroundImage: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center"
     },
     enterButton: {
         width: "100%",
@@ -78,6 +94,17 @@ const styles = StyleSheet.create({
         alignSelf: "stretch"
 
     },
+    logo: {
+        alignItems: "center",
+        justifyContent: "center",
+        width: 300,
+        height: 300
+    },
+    click: {
+        fontSize: 25,
+        fontWeight: "bold",
+        color: "#22236a"
+    }
 })
 
 export default WelcomeScreen;
