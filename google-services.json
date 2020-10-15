@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "829386645220",
+    "firebase_url": "https://afrostory-99221.firebaseio.com",
+    "project_id": "afrostory-99221",
+    "storage_bucket": "afrostory-99221.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:829386645220:android:5466f7e2d016de75fa96f1",
+        "android_client_info": {
+          "package_name": "com.afrostory.afrostory"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "829386645220-nae40hgl1ikfe5f36t5rmi6upvaom7ci.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDw8jLzD5jW-P6soH6Dm9En-RzwQxaqdYo"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "829386645220-nae40hgl1ikfe5f36t5rmi6upvaom7ci.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

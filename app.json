@@ -2,6 +2,7 @@
   "expo": {
     "name": "Afrostory",
     "slug": "afrostory",
+    "sdkVersion": "39.0.0",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "app/assets/transparentLogoSquare.png",
@@ -18,10 +19,11 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.complexia.afrostory"
+      "bundleIdentifier": "com.afrostory.afrostory"
     },
     "android": {
-      "package": "com.complexia.afrostory"
+      "package": "com.afrostory.afrostory",
+      "googleServicesFile": "google-services.json"
     },
     "web": {
       "favicon": "app/assets/transparentLogo2.png"
