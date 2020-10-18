@@ -26,7 +26,6 @@
       "package": "com.afrostory.afrostory",
       "googleServicesFile": "android/google-services.json"
     },
-    
     "description": "Afrobook v1"
   }
 }

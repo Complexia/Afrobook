@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { RefreshControl, SafeAreaView, View, Text, StyleSheet, TouchableOpacity, ActivityIndicator, FlatList, AsyncStorage, Platform } from 'react-native';
-import NetInfo from "@react-native-community/netinfo";
+
 
 
 
@@ -282,8 +282,8 @@ const getData = async(whereFrom) => {
     }
     if(whereFrom == "async") {
         
-        await checkConnectivity()
-        .then(async function(result) { 
+        
+        
             if(connectivityReturnValue) {
                 
                 try {
@@ -324,10 +324,7 @@ const getData = async(whereFrom) => {
                 setFetching(false);
             }
 
-        })
-        .catch(err => {
-            console.log("Error")
-        })
+        
         
     }
     booksArr.push (
@@ -379,47 +376,47 @@ const returnScreen = (navigation) => {
 }
 
 
-const checkConnectivity = async() => {
-    // For Android devices
-    if (Platform.OS === "android") {
-        NetInfo.fetch().then(isConnected => {
-        if (isConnected) {
-            //Alert.alert("You are online!");
-            connectivityReturnValue = true;
-            return true;
-        } else {
-            //Alert.alert("You are offline!");
-            connectivityReturnValue = false;
-            return false;
-        }
-        });
-    } 
-    // For iOS devices
-    else {       
-        NetInfo.addEventListener(
-        "connectionChange",
-        this.handleFirstConnectivityChange
-        );
-    }
+// const checkConnectivity = async() => {
+//     // For Android devices
+//     if (Platform.OS === "android") {
+//         NetInfo.fetch().then(isConnected => {
+//         if (isConnected) {
+//             //Alert.alert("You are online!");
+//             connectivityReturnValue = true;
+//             return true;
+//         } else {
+//             //Alert.alert("You are offline!");
+//             connectivityReturnValue = false;
+//             return false;
+//         }
+//         });
+//     } 
+//     // For iOS devices
+//     else {       
+//         NetInfo.addEventListener(
+//         "connectionChange",
+//         this.handleFirstConnectivityChange
+//         );
+//     }
     
-};
+// };
 
-const handleFirstConnectivityChange = isConnected => {
-    NetInfo.isConnected.removeEventListener(
-        "connectionChange",
-        this.handleFirstConnectivityChange
-    );
+// const handleFirstConnectivityChange = isConnected => {
+//     NetInfo.isConnected.removeEventListener(
+//         "connectionChange",
+//         this.handleFirstConnectivityChange
+//     );
 
-    if (!isConnected) {
-        //Alert.alert("You are offline!");
-        connectivityReturnValue = false;
-        return true;
-    } else {
-        //Alert.alert("You are online!");
-        connectivityReturnValue = true;
-        return false;
-    }
-};
+//     if (!isConnected) {
+//         //Alert.alert("You are offline!");
+//         connectivityReturnValue = false;
+//         return true;
+//     } else {
+//         //Alert.alert("You are online!");
+//         connectivityReturnValue = true;
+//         return false;
+//     }
+// };
 
 
 const wait = (timeout) => {
